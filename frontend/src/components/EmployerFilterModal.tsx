@@ -1,0 +1,217 @@
+import { useState } from 'react';
+
+interface EmployerFilterModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onApply: (filters: EmployerFilterState) => void;
+  initialFilters?: EmployerFilterState;
+}
+
+export interface EmployerFilterState {
+  languageLevel: string;
+  locations: string[];
+  experience: string;
+  workSchedule: string[];
+}
+
+export const EmployerFilterModal = ({ isOpen, onClose, onApply, initialFilters }: EmployerFilterModalProps) => {
+  const [selectedFilters, setSelectedFilters] = useState<EmployerFilterState>(
+    initialFilters || {
+      languageLevel: 'Lv.1 기초: 일상적인 의사소통 가능',
+      locations: ['종로구'],
+      experience: '경력 무관',
+      workSchedule: ['주말'],
+    }
+  );
+
+  if (!isOpen) return null;
+
+  const languageLevels = [
+    { id: 'lv1', label: 'Lv.1 기초: 일상적인 의사소통 가능' },
+    { id: 'lv2', label: 'Lv.2 중급: 특정 주제로 토론 가능' },
+    { id: 'lv3', label: 'Lv.3. 고급: 비즈니스 회의 가능' },
+    { id: 'lv4', label: 'Lv.4. 능숙: 원어민 수준' }
+  ];
+
+  const locations = [
+    '종로구', '중구', '용산구', '성동구', '광진구',
+    '동대문구', '중랑구', '성북구', '상관없음'
+  ];
+
+  const experiences = [
+    '경력 무관', '1년 미만', '1-2년', '2-3년', '3년 이상'
+  ];
+
+  const workSchedules = [
+    '주말', '평일', '주 2-3일', '주 4-5일', '풀타임'
+  ];
+
+  const setLanguageLevel = (value: string) => {
+    setSelectedFilters((prev) => ({ ...prev, languageLevel: value }));
+  };
+
+  const toggleLocation = (value: string) => {
+    setSelectedFilters((prev) => {
+      const currentLocations = prev.locations;
+      const newLocations = currentLocations.includes(value)
+        ? currentLocations.filter((v) => v !== value)
+        : [...currentLocations, value];
+      return { ...prev, locations: newLocations };
+    });
+  };
+
+  const setExperience = (value: string) => {
+    setSelectedFilters((prev) => ({ ...prev, experience: value }));
+  };
+
+  const toggleWorkSchedule = (value: string) => {
+    setSelectedFilters((prev) => {
+      const currentSchedule = prev.workSchedule;
+      const newSchedule = currentSchedule.includes(value)
+        ? currentSchedule.filter((v) => v !== value)
+        : [...currentSchedule, value];
+      return { ...prev, workSchedule: newSchedule };
+    });
+  };
+
+  const handleApply = () => {
+    onApply(selectedFilters);
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-black/40" 
+        onClick={onClose}
+      />
+      
+      {/* Modal */}
+      <div className="relative w-full max-w-[500px] bg-white rounded-t-[24px] shadow-xl 
+                    animate-slide-up max-h-[90vh] overflow-y-auto">
+        {/* Header */}
+        <div className="sticky top-0 bg-white border-b border-line-200 px-4 py-4 flex items-center rounded-t-[24px] z-10">
+          <button onClick={onClose} className="p-2 -ml-2">
+            <svg className="w-6 h-6 text-text-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h2 className="flex-1 text-center text-[18px] font-bold text-text-900 -ml-10">
+            인재 필터 설정
+          </h2>
+        </div>
+
+        {/* Content */}
+        <div className="px-4 py-6 pb-32">
+          {/* 언어 능력 */}
+          <div className="mb-8">
+            <h3 className="text-[17px] font-bold text-text-900 mb-4">언어 능력</h3>
+            <div className="flex flex-wrap gap-2">
+              {languageLevels.map((level) => (
+                <button
+                  key={level.id}
+                  onClick={() => setLanguageLevel(level.label)}
+                  className={`px-5 py-3 rounded-full text-[14px] font-medium transition-all ${
+                    selectedFilters.languageLevel === level.label
+                      ? 'bg-mint-600 text-white shadow-sm'
+                      : 'bg-gray-100 text-text-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {level.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 거주지 */}
+          <div className="mb-8">
+            <h3 className="text-[17px] font-bold text-text-900 mb-4">거주지</h3>
+            <div className="flex flex-wrap gap-2">
+              {locations.map((location) => (
+                <button
+                  key={location}
+                  onClick={() => toggleLocation(location)}
+                  className={`px-5 py-3 rounded-full text-[14px] font-medium transition-all ${
+                    selectedFilters.locations.includes(location)
+                      ? 'bg-mint-600 text-white shadow-sm'
+                      : 'bg-gray-100 text-text-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {location}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 경력사항 */}
+          <div className="mb-8">
+            <h3 className="text-[17px] font-bold text-text-900 mb-4">경력사항</h3>
+            <div className="flex flex-wrap gap-2">
+              {experiences.map((exp) => (
+                <button
+                  key={exp}
+                  onClick={() => setExperience(exp)}
+                  className={`px-5 py-3 rounded-full text-[14px] font-medium transition-all ${
+                    selectedFilters.experience === exp
+                      ? 'bg-mint-600 text-white shadow-sm'
+                      : 'bg-gray-100 text-text-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {exp}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 근무 가능 시간 */}
+          <div className="mb-8">
+            <h3 className="text-[17px] font-bold text-text-900 mb-4">근무 가능 시간</h3>
+            <div className="flex flex-wrap gap-2">
+              {workSchedules.map((schedule) => (
+                <button
+                  key={schedule}
+                  onClick={() => toggleWorkSchedule(schedule)}
+                  className={`px-5 py-3 rounded-full text-[14px] font-medium transition-all ${
+                    selectedFilters.workSchedule.includes(schedule)
+                      ? 'bg-mint-600 text-white shadow-sm'
+                      : 'bg-gray-100 text-text-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {schedule}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer - Apply Button */}
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-line-200 p-4"
+             style={{ maxWidth: '500px', margin: '0 auto' }}>
+          <button
+            onClick={handleApply}
+            className="w-full h-[56px] bg-mint-600 text-white rounded-[16px] text-[17px] 
+                     font-bold hover:bg-mint-700 transition-colors shadow-sm"
+          >
+            적용하기
+          </button>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes slide-up {
+          from {
+            transform: translateY(100%);
+          }
+          to {
+            transform: translateY(0);
+          }
+        }
+        .animate-slide-up {
+          animation: slide-up 0.3s ease-out;
+        }
+      `}</style>
+    </div>
+  );
+};
+

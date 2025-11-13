@@ -1,0 +1,131 @@
+from sqlmodel import SQLModel, Field, Relationship
+from typing import Optional, List
+from datetime import datetime
+import json
+
+
+class GeoPoint(SQLModel):
+    lat: float
+    lng: float
+
+
+class Experience(SQLModel):
+    role: str
+    years: int
+    tags: List[str] = []
+
+
+class Preferences(SQLModel):
+    industries: List[str] = []
+    wageRange: dict = {"min": 0, "max": 100000}
+    area: str = ""
+    radiusKm: int = 10
+    preferDays: List[str] = []
+
+
+class JobSeeker(SQLModel, table=True):
+    __tablename__ = "jobseekers"
+    
+    id: str = Field(primary_key=True)
+    name: str
+    nationality: str
+    phone: str
+    languageLevel: str
+    visaType: str
+    availability: str
+    location: Optional[str] = None  # JSON string of GeoPoint
+    experience: str = Field(default="[]")  # JSON string of Experience[]
+    preferences: str = Field(default="{}")  # JSON string of Preferences
+
+
+class Employer(SQLModel, table=True):
+    __tablename__ = "employers"
+    
+    id: str = Field(primary_key=True)
+    businessNo: str
+    shopName: str
+    industry: str
+    address: str
+    location: Optional[str] = None  # JSON string of GeoPoint
+    openHours: str
+    contact: str
+    media: str = Field(default="[]")  # JSON string of media URLs
+    minLanguageLevel: str
+    needVisa: str = Field(default="[]")  # JSON string
+    baseWage: int
+    schedule: str
+    rating: Optional[float] = None
+
+
+class Job(SQLModel, table=True):
+    __tablename__ = "jobs"
+    
+    id: str = Field(primary_key=True)
+    employerId: str = Field(foreign_key="employers.id")
+    title: str
+    description: str
+    category: str
+    wage: int
+    workDays: str
+    workHours: str
+    deadline: str  # ISO8601
+    positions: int
+    requiredLanguage: str
+    requiredVisa: str = Field(default="[]")  # JSON string
+    benefits: Optional[str] = None
+    employerMessage: Optional[str] = None
+    createdAt: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+
+
+class Application(SQLModel, table=True):
+    __tablename__ = "applications"
+    
+    applicationId: str = Field(primary_key=True)
+    seekerId: str = Field(foreign_key="jobseekers.id")
+    jobId: str = Field(foreign_key="jobs.id")
+    status: str = Field(default="applied")  # applied, hired, rejected
+    appliedAt: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+    updatedAt: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+    hiredAt: Optional[str] = None
+
+
+class Conversation(SQLModel, table=True):
+    __tablename__ = "conversations"
+    
+    id: str = Field(primary_key=True)
+    participants: str = Field(default="[]")  # JSON string of user IDs
+    updatedAt: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+
+
+class Message(SQLModel, table=True):
+    __tablename__ = "messages"
+    
+    id: str = Field(primary_key=True)
+    conversationId: str = Field(foreign_key="conversations.id")
+    senderId: str
+    text: str
+    translatedText: Optional[str] = None
+    timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+    read: bool = Field(default=False)
+
+
+class LearningProgress(SQLModel, table=True):
+    __tablename__ = "learning_progress"
+    
+    id: str = Field(primary_key=True)
+    seekerId: str = Field(foreign_key="jobseekers.id")
+    currentLevel: str
+    completedLessons: int = 0
+    totalLessons: int = 100
+    progressPercent: int = 0
+
+
+class User(SQLModel, table=True):
+    __tablename__ = "users"
+    
+    id: str = Field(primary_key=True)
+    email: str = Field(unique=True, index=True)
+    hashedPassword: str
+    role: str  # jobseeker, employer
+    profileId: str  # references JobSeeker.id or Employer.id
+

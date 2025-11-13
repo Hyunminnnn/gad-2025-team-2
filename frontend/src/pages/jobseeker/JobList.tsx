@@ -1,0 +1,114 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { SearchBar } from '@/components/SearchBar';
+import { FilterChips } from '@/components/FilterChips';
+import { FilterModal, type FilterState } from '@/components/FilterModal';
+import { JobCard } from '@/components/JobCard';
+import { JobCardSkeleton } from '@/components/Skeleton';
+import { jobsAPI } from '@/api/endpoints';
+import type { Job } from '@/types';
+import { mockJobs } from '@/data/mockJobs';
+
+export const JobList = () => {
+  const navigate = useNavigate();
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState<FilterState>({
+    languageLevel: ['Lv.3 중급'],
+    locations: ['종로구'],
+    experience: ['1-2년'],
+  });
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        setLoading(true);
+        // Mock 데이터 사용 (고용주가 등록한 공고와 연동)
+        await new Promise(resolve => setTimeout(resolve, 300)); // 로딩 시뮬레이션
+        setJobs(mockJobs.filter(job => job.status === 'active'));
+      } catch (error) {
+        toast.error('공고를 불러오는데 실패했습니다');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, []);
+
+  const handleFilterApply = (filters: FilterState) => {
+    setAppliedFilters(filters);
+    console.log('Applied filters:', filters);
+    // TODO: 필터 적용 로직 추가 (API 호출 등)
+  };
+
+  const getSelectedFiltersArray = () => {
+    return [
+      ...appliedFilters.languageLevel,
+      ...appliedFilters.locations,
+      ...appliedFilters.experience,
+    ];
+  };
+
+  return (
+    <div className="min-h-screen bg-background pb-20">
+      {/* Header with search */}
+      <header className="bg-white border-b border-line-200 px-4 pt-4 pb-3 sticky top-0 z-10">
+        <h1 className="text-[20px] font-bold text-text-900 mb-3">공고</h1>
+        <SearchBar placeholder="직종, 지역으로 검색..." />
+      </header>
+
+      {/* Filters */}
+      <div className="bg-white border-b border-line-200">
+        <FilterChips 
+          filters={getSelectedFiltersArray()}
+          title="필터 설정"
+          icon="⚙️"
+          onFilterClick={() => setIsFilterModalOpen(true)}
+        />
+      </div>
+
+      {/* Filter Modal */}
+      <FilterModal
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        onApply={handleFilterApply}
+        initialFilters={appliedFilters}
+      />
+
+      {/* Job Cards Section */}
+      <div className="px-4 py-4">
+        {/* Section header */}
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-[16px]">📄</span>
+          <h2 className="text-[18px] font-semibold text-text-900">새로 올라온 공고</h2>
+        </div>
+
+        {/* Job Grid */}
+        <div className="grid grid-cols-1 gap-3">
+          {loading ? (
+            <>
+              <JobCardSkeleton />
+              <JobCardSkeleton />
+              <JobCardSkeleton />
+              <JobCardSkeleton />
+            </>
+          ) : jobs.length > 0 ? (
+            jobs.map((job) => (
+              <div key={job.id} onClick={() => navigate(`/job/${job.id}`)}>
+                <JobCard job={job} variant="default" />
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-text-500 text-[15px]">공고가 없습니다</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+

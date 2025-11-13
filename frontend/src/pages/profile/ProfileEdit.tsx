@@ -1,0 +1,313 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { Header } from '@/components/Header';
+
+interface ProfileData {
+  name: string;
+  email: string;
+  phone: string;
+  nationality: string;
+  visaType: string;
+  languageLevel: string;
+  location: string;
+  skills: string[];
+  bio: string;
+}
+
+export const ProfileEdit = () => {
+  const navigate = useNavigate();
+  const [submitting, setSubmitting] = useState(false);
+
+  // Mock current user data
+  const [profile, setProfile] = useState<ProfileData>({
+    name: '김수정',
+    email: 'sujung.kim@example.com',
+    phone: '010-1234-5678',
+    nationality: '우즈베키스탄',
+    visaType: 'E-9',
+    languageLevel: 'Lv.3 중급',
+    location: '종로구',
+    skills: ['한국어', '영어', '컴퓨터'],
+    bio: '안녕하세요! 성실하고 책임감 있는 사람입니다.',
+  });
+
+  const [newSkill, setNewSkill] = useState('');
+
+  const languageOptions = ['Lv.1 기초', 'Lv.2 초급', 'Lv.3 중급', 'Lv.4 상급'];
+  const visaOptions = ['E-9', 'H-2', 'F-4', 'F-5', 'F-6', 'D-10'];
+  const locationOptions = ['종로구', '중구', '용산구', '성동구', '광진구', '동대문구', '중랑구', '성북구'];
+
+  const handleChange = (field: keyof ProfileData, value: string | string[]) => {
+    setProfile(prev => ({ ...prev, [field]: value }));
+  };
+
+  const addSkill = () => {
+    if (newSkill.trim() && !profile.skills.includes(newSkill.trim())) {
+      setProfile(prev => ({
+        ...prev,
+        skills: [...prev.skills, newSkill.trim()]
+      }));
+      setNewSkill('');
+    }
+  };
+
+  const removeSkill = (skill: string) => {
+    setProfile(prev => ({
+      ...prev,
+      skills: prev.skills.filter(s => s !== skill)
+    }));
+  };
+
+  const handleSubmit = async () => {
+    // Validation
+    if (!profile.name.trim()) {
+      toast.error('이름을 입력해주세요');
+      return;
+    }
+    if (!profile.email.trim()) {
+      toast.error('이메일을 입력해주세요');
+      return;
+    }
+    if (!profile.phone.trim()) {
+      toast.error('전화번호를 입력해주세요');
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      
+      // TODO: API call to update profile
+      // await usersAPI.updateProfile(profile);
+      
+      // Mock success
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast.success('프로필이 업데이트되었습니다');
+      navigate(-1);
+    } catch (error) {
+      toast.error('프로필 업데이트에 실패했습니다');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background pb-24">
+      <Header title="프로필 수정" showBack />
+
+      <div className="p-4 space-y-5">
+        {/* Profile Photo */}
+        <div className="bg-white rounded-[16px] p-5 shadow-card">
+          <div className="flex items-center gap-4">
+            <div className="w-20 h-20 bg-gradient-to-br from-mint-100 to-mint-200 rounded-full
+                          flex items-center justify-center text-[32px]">
+              👤
+            </div>
+            <div className="flex-1">
+              <button
+                onClick={() => {
+                  // TODO: Implement photo upload
+                  alert('사진 업로드 기능 (구현 예정)');
+                }}
+                className="px-4 py-2 bg-mint-600 text-white rounded-[12px] text-[14px] 
+                         font-semibold hover:bg-mint-700 transition-colors"
+              >
+                사진 변경
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Basic Info Section */}
+        <div className="bg-white rounded-[16px] p-5 shadow-card">
+          <h3 className="text-[16px] font-bold text-text-900 mb-4">기본 정보</h3>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-[14px] font-medium text-text-900 mb-2">
+                이름 <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={profile.name}
+                onChange={(e) => handleChange('name', e.target.value)}
+                className="w-full h-[48px] px-4 bg-background rounded-[12px] border border-line-200
+                         text-[14px] text-text-900 focus:outline-none focus:ring-2 focus:ring-mint-600"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[14px] font-medium text-text-900 mb-2">
+                이메일 <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                value={profile.email}
+                onChange={(e) => handleChange('email', e.target.value)}
+                className="w-full h-[48px] px-4 bg-background rounded-[12px] border border-line-200
+                         text-[14px] text-text-900 focus:outline-none focus:ring-2 focus:ring-mint-600"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[14px] font-medium text-text-900 mb-2">
+                전화번호 <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="tel"
+                value={profile.phone}
+                onChange={(e) => handleChange('phone', e.target.value)}
+                className="w-full h-[48px] px-4 bg-background rounded-[12px] border border-line-200
+                         text-[14px] text-text-900 focus:outline-none focus:ring-2 focus:ring-mint-600"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[14px] font-medium text-text-900 mb-2">
+                국적
+              </label>
+              <input
+                type="text"
+                value={profile.nationality}
+                onChange={(e) => handleChange('nationality', e.target.value)}
+                className="w-full h-[48px] px-4 bg-background rounded-[12px] border border-line-200
+                         text-[14px] text-text-900 focus:outline-none focus:ring-2 focus:ring-mint-600"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Work Info Section */}
+        <div className="bg-white rounded-[16px] p-5 shadow-card">
+          <h3 className="text-[16px] font-bold text-text-900 mb-4">근무 관련 정보</h3>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-[14px] font-medium text-text-900 mb-2">
+                비자 종류
+              </label>
+              <select
+                value={profile.visaType}
+                onChange={(e) => handleChange('visaType', e.target.value)}
+                className="w-full h-[48px] px-4 bg-background rounded-[12px] border border-line-200
+                         text-[14px] text-text-900 focus:outline-none focus:ring-2 focus:ring-mint-600"
+              >
+                {visaOptions.map(option => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-[14px] font-medium text-text-900 mb-2">
+                한국어 능력
+              </label>
+              <select
+                value={profile.languageLevel}
+                onChange={(e) => handleChange('languageLevel', e.target.value)}
+                className="w-full h-[48px] px-4 bg-background rounded-[12px] border border-line-200
+                         text-[14px] text-text-900 focus:outline-none focus:ring-2 focus:ring-mint-600"
+              >
+                {languageOptions.map(option => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-[14px] font-medium text-text-900 mb-2">
+                거주 지역
+              </label>
+              <select
+                value={profile.location}
+                onChange={(e) => handleChange('location', e.target.value)}
+                className="w-full h-[48px] px-4 bg-background rounded-[12px] border border-line-200
+                         text-[14px] text-text-900 focus:outline-none focus:ring-2 focus:ring-mint-600"
+              >
+                {locationOptions.map(option => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Skills Section */}
+        <div className="bg-white rounded-[16px] p-5 shadow-card">
+          <h3 className="text-[16px] font-bold text-text-900 mb-4">보유 기술/능력</h3>
+          
+          <div className="flex gap-2 mb-3">
+            <input
+              type="text"
+              value={newSkill}
+              onChange={(e) => setNewSkill(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && addSkill()}
+              placeholder="기술/능력 입력"
+              className="flex-1 h-[44px] px-4 bg-background rounded-[12px] border border-line-200
+                       text-[14px] text-text-900 placeholder:text-text-500
+                       focus:outline-none focus:ring-2 focus:ring-mint-600"
+            />
+            <button
+              onClick={addSkill}
+              className="px-4 h-[44px] bg-mint-600 text-white rounded-[12px] text-[14px] 
+                       font-semibold hover:bg-mint-700 transition-colors"
+            >
+              추가
+            </button>
+          </div>
+
+          {profile.skills.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {profile.skills.map((skill, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-2 px-3 py-2 bg-mint-100 text-mint-600 
+                           rounded-[12px] text-[13px] font-medium"
+                >
+                  <span>{skill}</span>
+                  <button
+                    onClick={() => removeSkill(skill)}
+                    className="hover:opacity-70 transition-opacity"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Bio Section */}
+        <div className="bg-white rounded-[16px] p-5 shadow-card">
+          <h3 className="text-[16px] font-bold text-text-900 mb-4">자기소개</h3>
+          
+          <textarea
+            value={profile.bio}
+            onChange={(e) => handleChange('bio', e.target.value)}
+            placeholder="자신을 소개하는 글을 작성해주세요"
+            rows={4}
+            className="w-full px-4 py-3 bg-background rounded-[12px] border border-line-200
+                     text-[14px] text-text-900 placeholder:text-text-500 resize-none
+                     focus:outline-none focus:ring-2 focus:ring-mint-600"
+          />
+        </div>
+      </div>
+
+      {/* Bottom CTA */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-line-200 p-4">
+        <button
+          onClick={handleSubmit}
+          disabled={submitting}
+          className="w-full h-[52px] bg-mint-600 text-white rounded-[12px] text-[16px] 
+                   font-semibold hover:bg-mint-700 transition-colors disabled:opacity-50"
+        >
+          {submitting ? '저장 중...' : '저장하기'}
+        </button>
+      </div>
+    </div>
+  );
+};
+
