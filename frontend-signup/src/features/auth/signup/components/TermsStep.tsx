@@ -64,7 +64,7 @@ export function TermsStep({ name, terms, onToggle, onPrev, onNext, canProceed }:
             canProceed ? 'bg-emerald-500' : 'bg-gray-300'
           }`}
         >
-          다음
+          {canProceed ? '다음' : '필수 약관에 동의해주세요'}
         </button>
       </div>
     </div>

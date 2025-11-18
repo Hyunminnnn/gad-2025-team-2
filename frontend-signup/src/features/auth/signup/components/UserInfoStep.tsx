@@ -136,13 +136,16 @@ export function UserInfoStep({
       <div className="mt-auto pt-10">
         <button
           type="button"
-          onClick={onNext}
+          onClick={() => {
+            console.log('다음 버튼 클릭:', { canProceed, values });
+            onNext();
+          }}
           disabled={!canProceed}
           className={`h-12 w-full rounded-full text-base font-semibold text-white transition ${
             canProceed ? 'bg-emerald-500' : 'bg-gray-300'
           }`}
         >
-          다음
+          {canProceed ? '다음' : '모든 항목을 입력해주세요'}
         </button>
       </div>
     </div>

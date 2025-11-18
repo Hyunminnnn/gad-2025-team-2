@@ -3,16 +3,35 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from app.db import create_db_and_tables
-from app.routers import auth, jobs, applications, users, conversations, messages, translate, learning, meta
+from app.routers import (
+    auth,
+    jobs,
+    applications,
+    users,
+    conversations,
+    messages,
+    translate,
+    learning,
+    meta,
+    job_seeker,
+)
 from app.ws import websocket_endpoint
-from app.services.translation import initialize_translation_service
+
+# Translation service는 선택적으로 import
+try:
+    from app.services.translation import initialize_translation_service
+    TRANSLATION_AVAILABLE = True
+except ImportError:
+    TRANSLATION_AVAILABLE = False
+    print("Warning: Translation service not available. Some features may not work.")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
     create_db_and_tables()
-    initialize_translation_service()
+    if TRANSLATION_AVAILABLE:
+        initialize_translation_service()
     yield
     # Shutdown
     pass
@@ -36,6 +55,7 @@ app.add_middleware(
 # Include routers
 app.include_router(auth.router)
 app.include_router(meta.router)
+app.include_router(job_seeker.router)
 app.include_router(jobs.router)
 app.include_router(applications.router)
 app.include_router(users.router)

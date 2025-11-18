@@ -153,3 +153,15 @@ class SignupUser(SQLModel, table=True):
     terms_marketing_optional: bool
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
+
+class JobSeekerProfile(SQLModel, table=True):
+    __tablename__ = "job_seeker_profiles"
+    
+    id: str = Field(primary_key=True)
+    user_id: str  # references signup_users.id
+    basic_info_file_name: Optional[str] = None
+    preferred_regions: str = Field(default="[]")  # JSON string of list[str]
+    preferred_jobs: str = Field(default="[]")  # JSON string of list[str]
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+

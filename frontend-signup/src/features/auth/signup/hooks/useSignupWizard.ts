@@ -57,7 +57,18 @@ export function useSignupWizard() {
       setLoadingNationalities(true);
       try {
         const data = await fetchNationalities();
-        setNationalities(data);
+        console.log('국적 목록 로드 성공:', data);
+        if (data && data.length > 0) {
+          setNationalities(data);
+        } else {
+          // 빈 배열이면 기본값 사용
+          console.warn('국적 목록이 비어있습니다. 기본값을 사용합니다.');
+          setNationalities([
+            { code: 'KR', label: '대한민국' },
+            { code: 'JP', label: '일본' },
+            { code: 'US', label: 'United States' },
+          ]);
+        }
       } catch (error) {
         console.error('Failed to load nationalities:', error);
         // Fallback to default nationalities
@@ -150,22 +161,46 @@ export function useSignupWizard() {
   };
 
   const goNext = async () => {
+    console.log('goNext 호출:', { step, isStep1Complete, isStep2Complete, isStep4Complete, values });
+    
     if (step === 1 && isStep1Complete) {
+      console.log('Step 1 → Step 2 이동');
       setStep(2);
     } else if (step === 2 && isStep2Complete) {
+      console.log('Step 2 → Step 4 이동');
       setStep(4);
     } else if (step === 4 && isStep4Complete) {
       setSubmitting(true);
       try {
+        console.log('회원가입 시작:', values);
         const response = await signup(values);
-        alert(`${response.name}님, ${response.message}`);
-        // Optionally redirect to success page or home
-        window.location.href = '/';
+        console.log('회원가입 성공:', response);
+        // 회원가입 완료 후 user_id를 localStorage에 저장
+        localStorage.setItem('signup_user_id', response.id);
+        // 온보딩으로 이동
+        console.log('온보딩 페이지로 이동합니다...');
+        window.location.href = '/job-seeker/onboarding';
       } catch (error) {
-        alert(error instanceof Error ? error.message : '회원가입에 실패했습니다.');
+        console.error('회원가입 에러:', error);
+        const errorMessage = error instanceof Error ? error.message : '회원가입에 실패했습니다.';
+        alert(errorMessage);
       } finally {
         setSubmitting(false);
       }
+    } else {
+      console.log('다음 단계로 이동할 수 없습니다:', { 
+        step, 
+        isStep1Complete, 
+        isStep2Complete, 
+        isStep4Complete,
+        step2Details: {
+          name: values.name,
+          phone: values.phone,
+          birthdate: values.birthdate,
+          gender: values.gender,
+          nationalityCode: values.nationalityCode,
+        }
+      });
     }
   };
 

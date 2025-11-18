@@ -80,3 +80,20 @@ class SignupResponse(BaseModel):
     role: str
     name: str
     message: str = "회원가입이 완료되었습니다."
+
+
+class JobSeekerProfileCreate(BaseModel):
+    user_id: str
+    basic_info_file_name: Optional[str] = None
+    preferred_regions: List[str] = []
+    preferred_jobs: List[str] = []
+
+
+class JobSeekerProfileResponse(BaseModel):
+    id: str
+    user_id: str
+    basic_info_file_name: Optional[str] = None
+    preferred_regions: List[str] = []
+    preferred_jobs: List[str] = []
+    created_at: str
+    updated_at: str

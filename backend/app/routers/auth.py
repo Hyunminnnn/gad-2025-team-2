@@ -60,8 +60,8 @@ async def signin(request: SignInRequest, session: Session = Depends(get_session)
     )
 
 
-@router.post("/signup", response_model=AuthResponse)
-async def signup(request: SignUpRequest, session: Session = Depends(get_session)):
+@router.post("/signup/legacy", response_model=AuthResponse)
+async def signup_legacy(request: SignUpRequest, session: Session = Depends(get_session)):
     # Check if user exists
     statement = select(User).where(User.email == request.email)
     existing = session.exec(statement).first()

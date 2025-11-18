@@ -25,15 +25,25 @@ export interface SignupResponse {
 }
 
 export async function fetchNationalities(): Promise<NationalityOption[]> {
-  const response = await fetch(`${API_BASE_URL}/meta/nationalities`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch nationalities');
+  try {
+    const response = await fetch(`${API_BASE_URL}/meta/nationalities`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch nationalities');
+    }
+    const data = await response.json();
+    return data.map((item: { code: string; name: string }) => ({
+      code: item.code,
+      label: item.name,
+    }));
+  } catch (error) {
+    console.error('국적 목록 로드 실패:', error);
+    // 백엔드가 실행되지 않았을 때 기본값 반환
+    return [
+      { code: 'KR', label: '대한민국' },
+      { code: 'JP', label: '일본' },
+      { code: 'US', label: 'United States' },
+    ];
   }
-  const data = await response.json();
-  return data.map((item: { code: string; name: string }) => ({
-    code: item.code,
-    label: item.name,
-  }));
 }
 
 export async function signup(payload: SignupFormValues): Promise<SignupResponse> {
@@ -52,6 +62,8 @@ export async function signup(payload: SignupFormValues): Promise<SignupResponse>
     },
   };
 
+  console.log('API 호출:', `${API_BASE_URL}/auth/signup`, signupPayload);
+
   const response = await fetch(`${API_BASE_URL}/auth/signup`, {
     method: 'POST',
     headers: {
@@ -60,10 +72,16 @@ export async function signup(payload: SignupFormValues): Promise<SignupResponse>
     body: JSON.stringify(signupPayload),
   });
 
+  console.log('API 응답 상태:', response.status, response.statusText);
+
   if (!response.ok) {
     const error = await response.json().catch(() => ({ detail: 'Signup failed' }));
-    throw new Error(error.detail || 'Signup failed');
+    console.error('API 에러 상세:', JSON.stringify(error, null, 2));
+    const errorMessage = error.detail || (Array.isArray(error) ? error.map((e: any) => e.msg || e.message).join(', ') : 'Signup failed');
+    throw new Error(errorMessage);
   }
 
-  return response.json();
+  const result = await response.json();
+  console.log('API 성공:', result);
+  return result;
 }

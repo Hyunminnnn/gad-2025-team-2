@@ -37,6 +37,7 @@ def seed_data():
             existing = session.get(Nationality, nationality.code)
             if not existing:
                 session.add(nationality)
+        session.commit()  # Commit nationalities immediately
         print("✅ Nationalities seeded")
         
         # Create JobSeekers
