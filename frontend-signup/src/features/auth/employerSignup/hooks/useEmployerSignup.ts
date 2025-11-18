@@ -1,12 +1,21 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { EmployerSignupStep, EmployerSignupState } from '../types';
+import { EmployerSignupStep, EmployerSignupState, EmployerCompanyInfo } from '../types';
 import { signupEmployer } from '../api';
+
+const INITIAL_COMPANY_INFO: EmployerCompanyInfo = {
+  businessType: null,
+  companyName: '',
+  baseAddress: '',
+  detailAddress: '',
+  hasNoDetailAddress: false,
+};
 
 const INITIAL_STATE: EmployerSignupState = {
   name: '',
   email: '',
   hasAgreedRules: false,
+  companyInfo: INITIAL_COMPANY_INFO,
 };
 
 export function useEmployerSignup() {
@@ -17,7 +26,7 @@ export function useEmployerSignup() {
   const [error, setError] = useState<string | null>(null);
 
   const goNext = () => {
-    if (step < 3) {
+    if (step < 6) {
       setStep((prev) => (prev + 1) as EmployerSignupStep);
     }
   };
@@ -63,18 +72,83 @@ export function useEmployerSignup() {
     goNext();
   };
 
-  const handleAgreeToRules = async () => {
+  const handleAgreeToRules = () => {
+    // 규정 동의 후 회사 추가 단계로 이동 (Step 4)
+    setStep(4);
+  };
+
+  // 회사 정보 핸들러들
+  const setBusinessType = (type: 'business_owner' | 'not_business_owner' | null) => {
+    setState((prev) => ({
+      ...prev,
+      companyInfo: { ...prev.companyInfo, businessType: type },
+    }));
+  };
+
+  const setCompanyName = (name: string) => {
+    setState((prev) => ({
+      ...prev,
+      companyInfo: { ...prev.companyInfo, companyName: name },
+    }));
+  };
+
+  const setBaseAddress = (address: string) => {
+    setState((prev) => ({
+      ...prev,
+      companyInfo: { ...prev.companyInfo, baseAddress: address },
+    }));
+  };
+
+  const setDetailAddress = (address: string) => {
+    setState((prev) => ({
+      ...prev,
+      companyInfo: { ...prev.companyInfo, detailAddress: address },
+    }));
+  };
+
+  const toggleNoDetailAddress = () => {
+    setState((prev) => ({
+      ...prev,
+      companyInfo: {
+        ...prev.companyInfo,
+        hasNoDetailAddress: !prev.companyInfo.hasNoDetailAddress,
+        detailAddress: !prev.companyInfo.hasNoDetailAddress ? '' : prev.companyInfo.detailAddress,
+      },
+    }));
+  };
+
+  const handleSubmitCompanyInfo = async () => {
     setIsSubmitting(true);
     setError(null);
 
+    // 검증
+    if (!state.companyInfo.baseAddress.trim()) {
+      setError('기본 주소를 입력해주세요.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!state.companyInfo.hasNoDetailAddress && !state.companyInfo.detailAddress.trim()) {
+      setError('상세 주소를 입력해주세요.');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
-      const response = await signupEmployer({
+      // 먼저 고용주 계정 생성
+      const signupResponse = await signupEmployer({
         role: 'employer',
         name: state.name,
         email: state.email,
       });
 
-      console.log('고용주 회원가입 성공:', response);
+      console.log('고용주 회원가입 성공:', signupResponse);
+
+      // TODO: 회사 정보 저장 API 호출 (나중에 구현)
+      // await saveEmployerCompany({
+      //   user_id: signupResponse.id,
+      //   ...state.companyInfo,
+      // });
 
       // 성공 시 고용주 홈으로 이동
       router.push('/employer/home?from=employerSignup');
@@ -100,6 +174,13 @@ export function useEmployerSignup() {
     handleNextFromInfo,
     handleConfirmGoRules,
     handleAgreeToRules,
+    // 회사 정보 핸들러들
+    setBusinessType,
+    setCompanyName,
+    setBaseAddress,
+    setDetailAddress,
+    toggleNoDetailAddress,
+    handleSubmitCompanyInfo,
   };
 }
 

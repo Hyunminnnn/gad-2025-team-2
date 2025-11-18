@@ -3,6 +3,9 @@
 import { EmployerInfoStep } from './components/EmployerInfoStep';
 import { EmployerWarningModal } from './components/EmployerWarningModal';
 import { EmployerRuleAgreementStep } from './components/EmployerRuleAgreementStep';
+import { BusinessTypeStep } from './components/BusinessTypeStep';
+import { CompanyNameStep } from './components/CompanyNameStep';
+import { CompanyAddressStep } from './components/CompanyAddressStep';
 import { useEmployerSignup } from './hooks/useEmployerSignup';
 
 // 간단한 이메일 형식 검증
@@ -18,11 +21,18 @@ export default function EmployerSignupWizard() {
     isSubmitting,
     error,
     goPrev,
+    goNext,
     handleNameChange,
     handleEmailChange,
     handleNextFromInfo,
     handleConfirmGoRules,
     handleAgreeToRules,
+    setBusinessType,
+    setCompanyName,
+    setBaseAddress,
+    setDetailAddress,
+    toggleNoDetailAddress,
+    handleSubmitCompanyInfo,
   } = useEmployerSignup();
 
   // Step 1에서 다음 버튼 활성화 조건
@@ -78,6 +88,42 @@ export default function EmployerSignupWizard() {
         <EmployerRuleAgreementStep
           onPrev={goPrev}
           onAgreeRules={handleAgreeToRules}
+          isSubmitting={isSubmitting}
+          error={error}
+        />
+      )}
+
+      {/* Step 4: 사업자 여부 선택 화면 */}
+      {step === 4 && (
+        <BusinessTypeStep
+          businessType={state.companyInfo.businessType}
+          onSelectBusinessType={setBusinessType}
+          onNext={goNext}
+          onPrev={goPrev}
+        />
+      )}
+
+      {/* Step 5: 회사 이름 입력 화면 */}
+      {step === 5 && (
+        <CompanyNameStep
+          companyName={state.companyInfo.companyName}
+          onChangeCompanyName={setCompanyName}
+          onNext={goNext}
+          onPrev={goPrev}
+        />
+      )}
+
+      {/* Step 6: 회사 주소 입력 화면 */}
+      {step === 6 && (
+        <CompanyAddressStep
+          baseAddress={state.companyInfo.baseAddress}
+          detailAddress={state.companyInfo.detailAddress}
+          hasNoDetailAddress={state.companyInfo.hasNoDetailAddress}
+          onChangeBaseAddress={setBaseAddress}
+          onChangeDetailAddress={setDetailAddress}
+          onToggleNoDetailAddress={toggleNoDetailAddress}
+          onSubmit={handleSubmitCompanyInfo}
+          onPrev={goPrev}
           isSubmitting={isSubmitting}
           error={error}
         />
