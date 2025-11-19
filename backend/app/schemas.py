@@ -73,6 +73,7 @@ class SignupPayload(BaseModel):
 class NationalityResponse(BaseModel):
     code: str
     name: str
+    phone_code: str
 
 
 class SignupResponse(BaseModel):

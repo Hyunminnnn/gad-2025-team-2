@@ -13,5 +13,5 @@ async def get_nationalities(session: Session = Depends(get_session)):
     """Get all nationalities"""
     statement = select(Nationality)
     nationalities = session.exec(statement).all()
-    return [NationalityResponse(code=n.code, name=n.name) for n in nationalities]
+    return [NationalityResponse(code=n.code, name=n.name, phone_code=n.phone_code) for n in nationalities]
 

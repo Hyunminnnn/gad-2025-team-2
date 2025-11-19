@@ -135,6 +135,7 @@ class Nationality(SQLModel, table=True):
     
     code: str = Field(primary_key=True)
     name: str
+    phone_code: str
 
 
 class SignupUser(SQLModel, table=True):

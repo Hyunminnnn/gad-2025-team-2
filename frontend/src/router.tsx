@@ -18,6 +18,7 @@ import { JobManagement } from './pages/employer/JobManagement';
 import { MessageList } from './pages/messages/List';
 import { Chat } from './pages/messages/Chat';
 import { SignIn } from './pages/auth/SignIn';
+import { SignUp } from './pages/auth/SignUp';
 import { MyPage } from './pages/mypage/MyPage';
 import { LearningHome } from './pages/learning/LearningHome';
 import { LevelTest } from './pages/learning/LevelTest';
@@ -31,6 +32,14 @@ import { MySchedule } from './pages/jobseeker/MySchedule';
 export const router = createBrowserRouter([
   {
     path: '/',
+    element: <Navigate to="/signup" replace />,
+  },
+  {
+    path: '/signup',
+    element: <SignUp />,
+  },
+  {
+    path: '/home',
     element: <Home />,
   },
   {
