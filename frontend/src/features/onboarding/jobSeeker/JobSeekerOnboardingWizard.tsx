@@ -8,6 +8,7 @@ import { ExperienceStep } from './components/ExperienceStep';
 import { ExperienceDetailStep } from './components/ExperienceDetailStep';
 import { StartInfoModal } from './components/StartInfoModal';
 import { StepIntroBottomSheet } from './components/StepIntroBottomSheet';
+import { OnboardingProgressBar } from './components/OnboardingProgressBar';
 import { useJobSeekerOnboarding } from './hooks/useJobSeekerOnboarding';
 
 export default function JobSeekerOnboardingWizard() {
@@ -36,8 +37,15 @@ export default function JobSeekerOnboardingWizard() {
     handleChangeExperienceData,
   } = useJobSeekerOnboarding();
 
+  // 전체 프로그레스 계산 (회원가입 2단계 + 온보딩 7단계 = 총 9단계)
+  // Step 2 = 3/9, Step 3 = 4/9, ..., Step 8 = 9/9
+  const totalProgressStep = step; // Step 2부터 시작하므로 +2 (회원가입 2단계)
+
   return (
     <div className="min-h-screen bg-white">
+      {/* Onboarding Progress Bar - 전체 9단계 중 현재 위치 표시 */}
+      <OnboardingProgressBar currentStep={totalProgressStep} totalSteps={9} />
+      
       {step === 2 && (
         <BasicInfoUploadStep
           uploadedFiles={values.uploadedFiles}

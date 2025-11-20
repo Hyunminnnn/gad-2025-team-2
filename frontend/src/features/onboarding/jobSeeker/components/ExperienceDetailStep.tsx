@@ -46,7 +46,7 @@ export function ExperienceDetailStep({
   };
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-[420px] flex-col bg-white px-4 pb-10 pt-8">
+    <div className="mx-auto flex min-h-screen w-full max-w-[420px] flex-col bg-white px-4 pb-10">
       {/* 헤더 */}
       <header className="mb-6 flex items-center gap-2">
         <button
