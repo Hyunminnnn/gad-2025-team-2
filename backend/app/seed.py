@@ -26,11 +26,40 @@ def seed_data():
         # Clear existing data (optional)
         print("Seeding database...")
         
-        # Create Nationalities
+        # Create Nationalities - Major Countries Only
         nationalities = [
-            Nationality(code="KR", name="대한민국"),
-            Nationality(code="JP", name="일본"),
-            Nationality(code="US", name="United States"),
+            Nationality(code="US", name="United States", phone_code="+1"),
+            Nationality(code="CA", name="Canada", phone_code="+1"),
+            Nationality(code="EG", name="مصر‎ (Egypt)", phone_code="+20"),
+            Nationality(code="ZA", name="South Africa", phone_code="+27"),
+            Nationality(code="GR", name="Ελλάδα (Greece)", phone_code="+30"),
+            Nationality(code="NL", name="Nederland", phone_code="+31"),
+            Nationality(code="FR", name="France", phone_code="+33"),
+            Nationality(code="ES", name="España", phone_code="+34"),
+            Nationality(code="IT", name="Italia", phone_code="+39"),
+            Nationality(code="GB", name="United Kingdom", phone_code="+44"),
+            Nationality(code="DE", name="Deutschland (Germany)", phone_code="+49"),
+            Nationality(code="MX", name="México", phone_code="+52"),
+            Nationality(code="BR", name="Brasil", phone_code="+55"),
+            Nationality(code="AU", name="Australia", phone_code="+61"),
+            Nationality(code="ID", name="Indonesia", phone_code="+62"),
+            Nationality(code="PH", name="Pilipinas (Philippines)", phone_code="+63"),
+            Nationality(code="NZ", name="Aotearoa (New Zealand)", phone_code="+64"),
+            Nationality(code="TH", name="ประเทศไทย (Thailand)", phone_code="+66"),
+            Nationality(code="JP", name="日本 (Japan)", phone_code="+81"),
+            Nationality(code="KR", name="대한민국 (South Korea)", phone_code="+82"),
+            Nationality(code="VN", name="Việt Nam (Vietnam)", phone_code="+84"),
+            Nationality(code="CN", name="中国 (China)", phone_code="+86"),
+            Nationality(code="IN", name="भारत (India)", phone_code="+91"),
+            Nationality(code="PK", name="پاکستان (Pakistan)", phone_code="+92"),
+            Nationality(code="LK", name="ශ්‍රී ලංකාව (Sri Lanka)", phone_code="+94"),
+            Nationality(code="MM", name="မြန်မာ (Myanmar)", phone_code="+95"),
+            Nationality(code="RU", name="Россия (Russia)", phone_code="+7"),
+            Nationality(code="UA", name="Україна (Ukraine)", phone_code="+380"),
+            Nationality(code="KW", name="الكويت‎ (Kuwait)", phone_code="+965"),
+            Nationality(code="SA", name="السعودية‎ (Saudi Arabia)", phone_code="+966"),
+            Nationality(code="AE", name="الإمارات العربية المتحدة‎ (United Arab Emirates)", phone_code="+971"),
+            Nationality(code="QA", name="قطر‎ (Qatar)", phone_code="+974"),
         ]
         for nationality in nationalities:
             # Check if exists, if not add

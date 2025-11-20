@@ -73,6 +73,7 @@ class SignupPayload(BaseModel):
 class NationalityResponse(BaseModel):
     code: str
     name: str
+    phone_code: str
 
 
 class SignupResponse(BaseModel):
@@ -80,6 +81,18 @@ class SignupResponse(BaseModel):
     role: str
     name: str
     message: str = "회원가입이 완료되었습니다."
+
+
+class SignupUserResponse(BaseModel):
+    id: str
+    role: str
+    name: str
+    phone: str
+    birthdate: str  # YYYY-MM-DD
+    gender: str
+    nationality_code: str
+    nationality_name: Optional[str] = None
+    created_at: str
 
 
 class WorkSchedulePayload(BaseModel):
