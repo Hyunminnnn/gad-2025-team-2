@@ -80,10 +80,11 @@ interface PickerProps {
 function Picker({ label, options, value, onChange }: PickerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const selectedRef = useRef<HTMLButtonElement>(null);
+  const hasScrolledRef = useRef(false);
 
   useEffect(() => {
-    // 선택된 항목으로 스크롤
-    if (selectedRef.current && containerRef.current) {
+    // 초기 마운트 시에만 한 번만 스크롤
+    if (!hasScrolledRef.current && selectedRef.current && containerRef.current) {
       const container = containerRef.current;
       const selected = selectedRef.current;
       const containerHeight = container.clientHeight;
@@ -92,8 +93,9 @@ function Picker({ label, options, value, onChange }: PickerProps) {
       
       // 선택된 항목이 중간에 오도록 스크롤
       container.scrollTop = selectedTop - containerHeight / 2 + selectedHeight / 2;
+      hasScrolledRef.current = true;
     }
-  }, [value]);
+  }, []);
 
   return (
     <div className="flex-1 text-center">
@@ -110,8 +112,11 @@ function Picker({ label, options, value, onChange }: PickerProps) {
               ref={active ? selectedRef : null}
               type="button"
               onClick={() => onChange(option)}
+              style={active ? { backgroundColor: '#E9FBF6' } : undefined}
               className={`block w-full px-4 py-2 text-[17px] transition ${
-                active ? 'bg-white font-semibold text-primary-mint' : 'text-text-700 hover:bg-white/50'
+                active 
+                  ? 'font-semibold text-primary-mint' 
+                  : 'bg-white text-text-700 hover:bg-gray-50'
               }`}
             >
               {option}

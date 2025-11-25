@@ -4,8 +4,11 @@ import { PreferredRegionStep } from './components/PreferredRegionStep';
 import { PreferredJobStep } from './components/PreferredJobStep';
 import { WorkScheduleCalendarStep } from './components/WorkScheduleCalendarStep';
 import { WorkScheduleDetailStep } from './components/WorkScheduleDetailStep';
+import { ExperienceStep } from './components/ExperienceStep';
+import { ExperienceDetailStep } from './components/ExperienceDetailStep';
 import { StartInfoModal } from './components/StartInfoModal';
 import { StepIntroBottomSheet } from './components/StepIntroBottomSheet';
+import { OnboardingProgressBar } from './components/OnboardingProgressBar';
 import { useJobSeekerOnboarding } from './hooks/useJobSeekerOnboarding';
 
 export default function JobSeekerOnboardingWizard() {
@@ -30,18 +33,19 @@ export default function JobSeekerOnboardingWizard() {
     handleChangeTime,
     handleToggleDay,
     handleToggleAllDays,
+    handleToggleExperienceSection,
+    handleChangeExperienceData,
   } = useJobSeekerOnboarding();
+
+  // 전체 프로그레스 계산 (회원가입 2단계 + 온보딩 7단계 = 총 9단계)
+  // Step 2 = 3/9, Step 3 = 4/9, ..., Step 8 = 9/9
+  const totalProgressStep = step; // Step 2부터 시작하므로 +2 (회원가입 2단계)
 
   return (
     <div className="min-h-screen bg-white">
-      {step === 1 && (
-        <ProfileOverviewStep
-          onStart={() => {
-            closeStepIntroSheet();
-            goNext();
-          }}
-        />
-      )}
+      {/* Onboarding Progress Bar - 전체 9단계 중 현재 위치 표시 */}
+      <OnboardingProgressBar currentStep={totalProgressStep} totalSteps={9} />
+      
       {step === 2 && (
         <BasicInfoUploadStep
           uploadedFiles={values.uploadedFiles}
@@ -82,8 +86,26 @@ export default function JobSeekerOnboardingWizard() {
           onToggleDay={handleToggleDay}
           onToggleAllDays={handleToggleAllDays}
           onPrev={goPrev}
-          onSubmit={handleSubmit}
-          isSubmitting={isSubmitting}
+          onSubmit={goNext}
+          isSubmitting={false}
+        />
+      )}
+      {step === 7 && (
+        <ExperienceStep
+          selectedSections={values.selectedExperienceSections}
+          onToggleSection={handleToggleExperienceSection}
+          onNext={goNext}
+          onSkip={handleSubmit}
+          onPrev={goPrev}
+        />
+      )}
+      {step === 8 && (
+        <ExperienceDetailStep
+          selectedSections={values.selectedExperienceSections}
+          experienceData={values.experienceData}
+          onChangeData={handleChangeExperienceData}
+          onNext={handleSubmit}
+          onPrev={goPrev}
         />
       )}
 
@@ -91,20 +113,6 @@ export default function JobSeekerOnboardingWizard() {
         <div className="fixed bottom-4 left-4 right-4 mx-auto max-w-[420px] rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-[15px] text-red-700">
           {error}
         </div>
-      )}
-
-      {step === 1 && (
-        <>
-          <StartInfoModal
-            open={showStartInfoModal}
-            onClose={handleStartInfoModalClose}
-          />
-          <StepIntroBottomSheet
-            open={showStepIntroSheet}
-            onStart={handleStepIntroStart}
-            onClose={closeStepIntroSheet}
-          />
-        </>
       )}
     </div>
   );

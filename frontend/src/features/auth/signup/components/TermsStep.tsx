@@ -19,7 +19,7 @@ const TERMS_LIST: Array<{ key: keyof TermsState; label: string }> = [
 
 export function TermsStep({ name, terms, onToggle, onPrev, onNext, canProceed }: TermsStepProps) {
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-sm flex-col bg-white px-6 pb-10 pt-8">
+    <div className="mx-auto flex min-h-screen w-full max-w-sm flex-col bg-white px-6 pb-10">
       <header className="mb-6 flex items-center gap-2">
         <button type="button" onClick={onPrev} className="text-[26px] text-text-600 hover:text-text-900">
           ←
