@@ -133,3 +133,30 @@ class JobSeekerProfileResponse(BaseModel):
     experience_introduction: Optional[str] = None
     created_at: str
     updated_at: str
+
+
+class EmployerSignupPayload(BaseModel):
+    name: str
+    email: str
+    business_type: str  # 'business' or 'individual'
+    company_name: str
+    address: str
+    address_detail: Optional[str] = None
+
+
+class EmployerSignupResponse(BaseModel):
+    id: str
+    name: str
+    company_name: str
+    message: str = "고용주 회원가입이 완료되었습니다."
+
+
+class EmployerProfileResponse(BaseModel):
+    id: str
+    user_id: str
+    business_type: str
+    company_name: str
+    address: str
+    address_detail: Optional[str] = None
+    created_at: str
+    updated_at: str
