@@ -16,7 +16,7 @@ interface UserInfoStepProps {
 
 const LABEL_CLASS = 'text-sm font-medium text-gray-900';
 const INPUT_CLASS =
-  'mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 text-base transition focus:border-emerald-500 focus:outline-none';
+  'mt-1.5 w-full rounded-2xl border border-gray-200 px-4 py-2.5 text-base transition focus:border-emerald-500 focus:outline-none';
 
 export function UserInfoStep({
   values,
@@ -32,8 +32,8 @@ export function UserInfoStep({
   canProceed,
 }: UserInfoStepProps) {
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-sm flex-col bg-white px-6 pb-10">
-      <header className="mb-6 flex items-center gap-2">
+    <div className="mx-auto flex h-screen w-full max-w-sm flex-col bg-white px-6 pb-24">
+      <header className="mb-3 flex items-center gap-2 pt-4">
         <button type="button" onClick={onPrev} className="text-[26px] text-text-600 hover:text-text-900">
           ←
         </button>
@@ -41,9 +41,9 @@ export function UserInfoStep({
           구직자 가입
         </span>
       </header>
-      <h1 className="mb-6 text-xl font-semibold text-gray-900">회원정보를 입력해 주세요</h1>
+      <h1 className="mb-3 text-xl font-semibold text-gray-900">회원정보를 입력해 주세요</h1>
 
-      <div className="space-y-5">
+      <div className="flex-1 overflow-y-auto space-y-3.5 pb-2">
         <div>
           <label className={LABEL_CLASS} htmlFor="name">
             이름
@@ -133,7 +133,7 @@ export function UserInfoStep({
         </div>
       </div>
 
-      <div className="mt-auto pt-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-4 max-w-sm mx-auto">
         <button
           type="button"
           onClick={() => {

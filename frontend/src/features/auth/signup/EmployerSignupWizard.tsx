@@ -61,21 +61,21 @@ export function EmployerSignupWizard() {
       </div>
 
       {/* Footer */}
-      <div className="border-t border-gray-200 bg-white px-6 py-4">
-        <div className="flex flex-col items-center gap-3">
-          <p className="text-[14px] text-gray-600">
+      <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white px-6 py-4 shadow-lg">
+        <div className="flex flex-col items-center gap-2">
+          <button
+            onClick={goNext}
+            disabled={!canProceed()}
+            className="w-full max-w-md rounded-xl bg-primary-mint py-3.5 text-[16px] font-semibold text-white transition-colors hover:bg-primary-mint/90 disabled:bg-gray-300 disabled:text-gray-500"
+          >
+            다음
+          </button>
+          <p className="text-[13px] text-gray-600">
             로그인/가입에 어려움이 있으신가요?{' '}
             <button className="font-medium text-primary-mint underline">
               고객센터
             </button>
           </p>
-          <button
-            onClick={goNext}
-            disabled={!canProceed()}
-            className="w-full rounded-xl bg-primary-mint py-3.5 text-[16px] font-semibold text-white transition-colors hover:bg-primary-mint/90 disabled:bg-gray-300 disabled:text-gray-500"
-          >
-            다음
-          </button>
         </div>
       </div>
 
@@ -104,4 +104,6 @@ export function EmployerSignupWizard() {
     </div>
   );
 }
+
+export default EmployerSignupWizard;
 

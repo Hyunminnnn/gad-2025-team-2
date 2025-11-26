@@ -7,12 +7,12 @@ interface EmployerInfoStepProps {
 
 export function EmployerInfoStep({ formData, updateFormData }: EmployerInfoStepProps) {
   return (
-    <div className="flex h-full flex-col bg-white px-6 pt-24 pb-6">
-      <h1 className="mb-10 text-[26px] font-bold text-gray-900">
+    <div className="flex h-full flex-col bg-white px-6 pt-20 pb-32">
+      <h1 className="mb-6 text-[26px] font-bold text-gray-900">
         정보를 입력해 주세요
       </h1>
 
-      <div className="flex-1 space-y-6">
+      <div className="flex-1 space-y-5">
         {/* 이름 입력 */}
         <div>
           <label className="mb-2 flex items-center text-[15px] font-medium text-gray-700">

@@ -21,7 +21,7 @@ import { SignIn } from './pages/auth/SignIn';
 import { SignUp } from './pages/auth/SignUp';
 import { AutoRedirect } from './pages/auth/AutoRedirect';
 import Onboarding from './pages/auth/Onboarding';
-import EmployerSignupWizard from './features/auth/employerSignup/EmployerSignupWizard';
+import EmployerSignupWizard from './features/auth/signup/EmployerSignupWizard';
 import { MyPage } from './pages/mypage/MyPage';
 import { LearningHome } from './pages/learning/LearningHome';
 import { LevelTest } from './pages/learning/LevelTest';

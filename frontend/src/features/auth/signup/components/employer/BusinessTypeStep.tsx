@@ -12,8 +12,8 @@ export function BusinessTypeStep({ formData, updateFormData }: BusinessTypeStepP
   ] as const;
 
   return (
-    <div className="flex h-full flex-col bg-white px-6 pt-24 pb-6">
-      <h1 className="mb-10 text-[26px] font-bold text-gray-900">
+    <div className="flex h-full flex-col bg-white px-6 pt-20 pb-32">
+      <h1 className="mb-6 text-[26px] font-bold text-gray-900">
         사업자 여부를 선택해 주세요
       </h1>
 
@@ -34,7 +34,7 @@ export function BusinessTypeStep({ formData, updateFormData }: BusinessTypeStepP
       </div>
 
       {/* 정보 안내 */}
-      <div className="mt-6 rounded-xl bg-gray-50 p-4">
+      <div className="mt-4 rounded-xl bg-gray-50 p-4">
         <div className="flex items-start gap-2">
           <div className="flex-shrink-0">
             <svg className="h-5 w-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">

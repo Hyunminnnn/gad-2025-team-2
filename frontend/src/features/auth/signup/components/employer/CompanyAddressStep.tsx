@@ -45,8 +45,8 @@ export function CompanyAddressStep({ formData, updateFormData }: CompanyAddressS
   };
 
   return (
-    <div className="flex h-full flex-col bg-white px-6 pt-24 pb-6">
-      <h1 className="mb-10 text-[26px] font-bold text-gray-900">
+    <div className="flex h-full flex-col bg-white px-6 pt-20 pb-32">
+      <h1 className="mb-6 text-[26px] font-bold text-gray-900">
         주소
       </h1>
 

@@ -19,8 +19,8 @@ const TERMS_LIST: Array<{ key: keyof TermsState; label: string }> = [
 
 export function TermsStep({ name, terms, onToggle, onPrev, onNext, canProceed }: TermsStepProps) {
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-sm flex-col bg-white px-6 pb-10">
-      <header className="mb-6 flex items-center gap-2">
+    <div className="mx-auto flex h-screen w-full max-w-sm flex-col bg-white px-6 pb-24">
+      <header className="mb-4 flex items-center gap-2 pt-4">
         <button type="button" onClick={onPrev} className="text-[26px] text-text-600 hover:text-text-900">
           ←
         </button>
@@ -29,7 +29,7 @@ export function TermsStep({ name, terms, onToggle, onPrev, onNext, canProceed }:
         </span>
       </header>
 
-      <div className="space-y-6">
+      <div className="flex-1 overflow-y-auto space-y-5 pb-2">
         <div>
           <p className="text-lg font-semibold text-gray-900">{name}님</p>
           <p className="text-sm text-gray-500">서비스 이용을 위한 약관에 동의해 주세요.</p>
@@ -55,7 +55,7 @@ export function TermsStep({ name, terms, onToggle, onPrev, onNext, canProceed }:
         </div>
       </div>
 
-      <div className="mt-auto pt-8">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-4 max-w-sm mx-auto">
         <button
           type="button"
           onClick={onNext}
