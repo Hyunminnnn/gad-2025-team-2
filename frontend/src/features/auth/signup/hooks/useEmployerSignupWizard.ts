@@ -14,6 +14,7 @@ export interface EmployerSignupData {
 export function useEmployerSignupWizard() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [termsAgreed, setTermsAgreed] = useState(false);
 
@@ -32,12 +33,13 @@ export function useEmployerSignupWizard() {
   };
 
   const goNext = () => {
+    // Step 1: 이름, 이메일 입력 후 알림 권한 팝업 표시
     if (step === 1 && !termsAgreed) {
-      setShowTermsModal(true);
+      setShowNotificationModal(true);
       return;
     }
     
-    if (step < 5) {
+    if (step < 4) {
       setStep(step + 1);
     } else {
       handleSubmit();
@@ -52,6 +54,20 @@ export function useEmployerSignupWizard() {
     }
   };
 
+  // 알림 권한 팝업에서 "다음에 할게요" 클릭 시
+  const handleNotificationSkip = () => {
+    setShowNotificationModal(false);
+    setShowTermsModal(true);
+  };
+
+  // 알림 권한 팝업에서 "설정으로 이동하기" 클릭 시
+  const handleGoToSettings = () => {
+    setShowNotificationModal(false);
+    setShowTermsModal(true);
+    // 실제로는 여기서 앱 설정으로 이동하는 로직이 들어갈 수 있음
+  };
+
+  // 약관 동의 팝업에서 "규정에 동의합니다" 클릭 시
   const handleTermsAgree = () => {
     setTermsAgreed(true);
     setShowTermsModal(false);
@@ -81,6 +97,9 @@ export function useEmployerSignupWizard() {
 
       const data = await response.json();
       console.log('고용주 회원가입 성공:', data);
+      
+      // Store user ID for later use
+      localStorage.setItem('signup_user_id', data.id);
       
       // 회원가입 완료 후 홈으로 이동
       navigate('/employer/home');
@@ -112,8 +131,12 @@ export function useEmployerSignupWizard() {
     goNext,
     goPrev,
     canProceed,
+    showNotificationModal,
+    setShowNotificationModal,
     showTermsModal,
     setShowTermsModal,
+    handleNotificationSkip,
+    handleGoToSettings,
     handleTermsAgree,
   };
 }

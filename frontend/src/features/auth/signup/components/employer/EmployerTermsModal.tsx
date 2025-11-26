@@ -29,8 +29,8 @@ export function EmployerTermsModal({ isOpen, onClose, onAgree }: EmployerTermsMo
 
         {/* 내용 */}
         <div className="mb-6 rounded-xl bg-gray-50 p-4">
-          <p className="mb-3 text-center text-[14px] leading-relaxed text-gray-700">
-            워크비에 필요한정보 대해
+          <p className="text-center text-[14px] leading-relaxed text-gray-700">
+            워크페어 는 불법행위에 대해
           </p>
           <p className="text-center text-[14px] leading-relaxed text-gray-700">
             수사 기관에 적극 협조하고 있습니다
@@ -38,27 +38,19 @@ export function EmployerTermsModal({ isOpen, onClose, onAgree }: EmployerTermsMo
         </div>
 
         <p className="mb-6 text-center text-[13px] leading-relaxed text-gray-600">
-          유흥업소, 유흥주점, 불건전 마사지, 토박이, 대리커넥, 인력리 밍룸,
-          신분≈출근제, 디그자, 신분차 변연, 공간 가계, 구매에매, 기밀
-          금버가 없는 등의 공문을 올리시다 된 대량 제재로 유도하는 광고
-          광고 업이 이용 제한됩니다
+          유흥업소, 유흥주점, 불건전 마사지, 토킹바, 대화카페, 인터넷 방송,
+          신체노출모델, 단란제, 선불차 부업, 금전 거래, 구매대행, 기분
+          금여가 없는 등의 공고를 올리거나 타 대화 채널로 유도하는 경우
+          경고 없이 이용 제한합니다
         </p>
 
         {/* 버튼 영역 */}
-        <div className="space-y-3">
-          <button
-            onClick={onAgree}
-            className="w-full rounded-xl bg-primary-mint py-3.5 text-[16px] font-semibold text-white transition-colors hover:bg-primary-mint/90"
-          >
-            설정으로 이동하기
-          </button>
-          <button
-            onClick={onClose}
-            className="w-full rounded-xl bg-gray-100 py-3.5 text-[16px] font-medium text-gray-700 transition-colors hover:bg-gray-200"
-          >
-            다음에 할게요
-          </button>
-        </div>
+        <button
+          onClick={onAgree}
+          className="w-full rounded-xl bg-primary-mint py-3.5 text-[16px] font-semibold text-white transition-colors hover:bg-primary-mint/90"
+        >
+          규정에 동의합니다
+        </button>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { useEmployerSignupWizard } from './hooks/useEmployerSignupWizard';
 import { EmployerInfoStep } from './components/employer/EmployerInfoStep';
+import { NotificationPermissionModal } from './components/employer/NotificationPermissionModal';
 import { EmployerTermsModal } from './components/employer/EmployerTermsModal';
 import { BusinessTypeStep } from './components/employer/BusinessTypeStep';
 import { CompanyNameStep } from './components/employer/CompanyNameStep';
@@ -14,8 +15,10 @@ export function EmployerSignupWizard() {
     goNext,
     goPrev,
     canProceed,
+    showNotificationModal,
     showTermsModal,
-    setShowTermsModal,
+    handleNotificationSkip,
+    handleGoToSettings,
     handleTermsAgree,
   } = useEmployerSignupWizard();
 
@@ -75,10 +78,17 @@ export function EmployerSignupWizard() {
         </div>
       </div>
 
+      {/* Notification Permission Modal */}
+      <NotificationPermissionModal
+        isOpen={showNotificationModal}
+        onClose={handleNotificationSkip}
+        onGoToSettings={handleGoToSettings}
+      />
+
       {/* Terms Modal */}
       <EmployerTermsModal
         isOpen={showTermsModal}
-        onClose={() => setShowTermsModal(false)}
+        onClose={() => {}}
         onAgree={handleTermsAgree}
       />
     </div>

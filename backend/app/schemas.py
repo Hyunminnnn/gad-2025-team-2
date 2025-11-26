@@ -160,3 +160,38 @@ class EmployerProfileResponse(BaseModel):
     address_detail: Optional[str] = None
     created_at: str
     updated_at: str
+
+
+class JobCreateRequest(BaseModel):
+    employer_profile_id: str
+    title: str
+    description: str
+    category: str
+    wage: int
+    work_days: str  # e.g., "월,화,수" or "MON,TUE,WED"
+    work_hours: str  # e.g., "09:00-18:00"
+    deadline: str  # ISO8601
+    positions: int
+    required_language: str  # e.g., "TOPIK 1급"
+    required_visa: List[str] = []
+    benefits: Optional[str] = None
+    employer_message: Optional[str] = None
+
+
+class JobResponse(BaseModel):
+    id: str
+    employer_id: str
+    title: str
+    description: str
+    category: str
+    wage: int
+    work_days: str
+    work_hours: str
+    deadline: str
+    positions: int
+    required_language: str
+    required_visa: List[str]
+    benefits: Optional[str] = None
+    employer_message: Optional[str] = None
+    created_at: str
+    employer: dict = {}
