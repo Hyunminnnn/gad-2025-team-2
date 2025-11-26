@@ -87,10 +87,10 @@ class SignupUserResponse(BaseModel):
     id: str
     role: str
     name: str
-    phone: str
-    birthdate: str  # YYYY-MM-DD
-    gender: str
-    nationality_code: str
+    phone: Optional[str] = None
+    birthdate: Optional[str] = None  # YYYY-MM-DD
+    gender: Optional[str] = None
+    nationality_code: Optional[str] = None
     nationality_name: Optional[str] = None
     created_at: str
 

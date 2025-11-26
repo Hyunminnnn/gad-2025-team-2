@@ -181,16 +181,18 @@ async def get_signup_user(user_id: str, session: Session = Depends(get_session))
     if not signup_user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    # Get nationality name
-    nationality = session.get(Nationality, signup_user.nationality_code)
-    nationality_name = nationality.name if nationality else None
+    # Get nationality name (optional for employers)
+    nationality_name = None
+    if signup_user.nationality_code:
+        nationality = session.get(Nationality, signup_user.nationality_code)
+        nationality_name = nationality.name if nationality else None
     
     return SignupUserResponse(
         id=signup_user.id,
         role=signup_user.role,
         name=signup_user.name,
         phone=signup_user.phone,
-        birthdate=signup_user.birthdate.isoformat(),
+        birthdate=signup_user.birthdate.isoformat() if signup_user.birthdate else None,
         gender=signup_user.gender,
         nationality_code=signup_user.nationality_code,
         nationality_name=nationality_name,

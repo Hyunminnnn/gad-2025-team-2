@@ -31,6 +31,11 @@ except ImportError:
 async def lifespan(app: FastAPI):
     # Startup
     create_db_and_tables()
+    
+    # Seed data
+    from app.seed import seed_nationalities
+    seed_nationalities()
+    
     if TRANSLATION_AVAILABLE:
         initialize_translation_service()
     yield
