@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import os
 import uuid
 import hashlib
+import traceback
 
 from app.db import get_session
 from app.models import User, JobSeeker, Employer, SignupUser, Nationality
@@ -126,71 +127,82 @@ async def signup_legacy(request: SignUpRequest, session: Session = Depends(get_s
 @router.post("/signup", response_model=SignupResponse, status_code=201)
 async def signup_new(request: SignupPayload, session: Session = Depends(get_session)):
     """New signup endpoint for wizard flow"""
-    # Validate required terms
-    if not request.terms.tos_required or not request.terms.privacy_required:
-        raise HTTPException(
-            status_code=400,
-            detail="필수 약관에 동의해주세요."
-        )
-    
-    # Validate nationality exists (only for job_seeker)
-    if request.role == "job_seeker":
-        if not request.nationality_code:
+    try:
+        # Validate required terms
+        if not request.terms.tos_required or not request.terms.privacy_required:
             raise HTTPException(
                 status_code=400,
-                detail="구직자는 국적 코드가 필요합니다."
+                detail="필수 약관에 동의해주세요."
             )
-        nationality = session.get(Nationality, request.nationality_code)
-        if not nationality:
-            raise HTTPException(
-                status_code=400,
-                detail="유효하지 않은 국적 코드입니다."
-            )
-    else:
-        # 고용주는 국적 코드가 없을 수 있음
-        request.nationality_code = request.nationality_code or "KR"  # 기본값 설정
-    
-    # Create SignupUser
-    user_id = f"signup-{uuid.uuid4().hex[:8]}"
-    
-    # 고용주는 birthdate, gender가 없을 수 있으므로 기본값 처리
-    birthdate = None
-    if request.birthdate:
-        try:
-            birthdate = datetime.strptime(request.birthdate, "%Y-%m-%d").date()
-        except ValueError:
-            # 고용주는 생년월일이 없을 수 있으므로 오늘 날짜로 설정
+        
+        # Validate nationality exists (only for job_seeker)
+        if request.role == "job_seeker":
+            if not request.nationality_code:
+                raise HTTPException(
+                    status_code=400,
+                    detail="구직자는 국적 코드가 필요합니다."
+                )
+            nationality = session.get(Nationality, request.nationality_code)
+            if not nationality:
+                # 사용 가능한 국적 코드 목록 가져오기
+                all_nationalities = session.exec(select(Nationality)).all()
+                available_codes = [n.code for n in all_nationalities]
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"유효하지 않은 국적 코드입니다: {request.nationality_code}. 사용 가능한 코드: {', '.join(available_codes[:10])}"
+                )
+        else:
+            # 고용주는 국적 코드가 없을 수 있음
+            request.nationality_code = request.nationality_code or "KR"  # 기본값 설정
+        
+        # Create SignupUser
+        user_id = f"signup-{uuid.uuid4().hex[:8]}"
+        
+        # 고용주는 birthdate, gender가 없을 수 있으므로 기본값 처리
+        birthdate = None
+        if request.birthdate:
+            try:
+                birthdate = datetime.strptime(request.birthdate, "%Y-%m-%d").date()
+            except ValueError:
+                # 고용주는 생년월일이 없을 수 있으므로 오늘 날짜로 설정
+                birthdate = datetime.utcnow().date()
+        else:
             birthdate = datetime.utcnow().date()
-    else:
-        birthdate = datetime.utcnow().date()
-    
-    gender = request.gender or "male"  # 고용주는 기본값
-    nationality_code = request.nationality_code or "KR"  # 고용주는 기본값
-    
-    signup_user = SignupUser(
-        id=user_id,
-        role=request.role,
-        name=request.name,
-        phone=request.phone or "",  # 고용주는 전화번호가 없을 수 있음
-        birthdate=birthdate,
-        gender=gender,
-        nationality_code=nationality_code,
-        terms_tos_required=request.terms.tos_required,
-        terms_privacy_required=request.terms.privacy_required,
-        terms_sms_optional=request.terms.sms_optional,
-        terms_marketing_optional=request.terms.marketing_optional,
-    )
-    
-    session.add(signup_user)
-    session.commit()
-    session.refresh(signup_user)
-    
-    return SignupResponse(
-        id=signup_user.id,
-        role=signup_user.role,
-        name=signup_user.name,
-        message="회원가입이 완료되었습니다."
-    )
+        
+        gender = request.gender or "male"  # 고용주는 기본값
+        nationality_code = request.nationality_code or "KR"  # 고용주는 기본값
+        
+        signup_user = SignupUser(
+            id=user_id,
+            role=request.role,
+            name=request.name,
+            phone=request.phone or "",  # 고용주는 전화번호가 없을 수 있음
+            birthdate=birthdate,
+            gender=gender,
+            nationality_code=nationality_code,
+            terms_tos_required=request.terms.tos_required,
+            terms_privacy_required=request.terms.privacy_required,
+            terms_sms_optional=request.terms.sms_optional,
+            terms_marketing_optional=request.terms.marketing_optional,
+        )
+        
+        session.add(signup_user)
+        session.commit()
+        session.refresh(signup_user)
+        
+        return SignupResponse(
+            id=signup_user.id,
+            role=signup_user.role,
+            name=signup_user.name,
+            message="회원가입이 완료되었습니다."
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        error_detail = f"Signup failed: {str(e)}\n{traceback.format_exc()}"
+        print(error_detail)  # 로그 출력
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
 @router.get("/signup-user/{user_id}", response_model=SignupUserResponse)

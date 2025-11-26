@@ -24,22 +24,22 @@ export function TermsStep({ name, terms, onToggle, onPrev, onNext, canProceed }:
         <button type="button" onClick={onPrev} className="text-[26px] text-text-600 hover:text-text-900">
           ←
         </button>
-        <span className="flex-1 text-center text-[19px] font-semibold text-text-900">
+        <span className="flex-1 text-center text-base font-semibold text-gray-900">
           구직자 가입
         </span>
       </header>
 
       <div className="space-y-6">
         <div>
-          <p className="text-[22px] font-bold text-text-900">{name}님</p>
-          <p className="text-[15px] text-text-600 mt-1">서비스 이용을 위한 약관에 동의해 주세요.</p>
+          <p className="text-lg font-semibold text-gray-900">{name}님</p>
+          <p className="text-sm text-gray-500">서비스 이용을 위한 약관에 동의해 주세요.</p>
         </div>
 
-        <div className="divide-y divide-line-200 rounded-2xl border border-border">
+        <div className="divide-y divide-gray-100 rounded-2xl border border-gray-100">
           {TERMS_LIST.map(({ key, label }, index) => (
             <label
               key={key}
-              className={`flex items-center gap-3 px-4 py-4 text-[15px] font-medium cursor-pointer ${
+              className={`flex items-center gap-3 px-4 py-4 text-sm font-medium ${
                 index === 0 ? 'rounded-t-2xl' : ''
               } ${index === TERMS_LIST.length - 1 ? 'rounded-b-2xl' : ''}`}
             >
@@ -47,9 +47,9 @@ export function TermsStep({ name, terms, onToggle, onPrev, onNext, canProceed }:
                 type="checkbox"
                 checked={terms[key]}
                 onChange={() => onToggle(key)}
-                className="h-5 w-5 rounded border-border text-primary-mint focus:ring-primary-mint/20"
+                className="h-5 w-5 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
               />
-              <span className="text-text-900">{label}</span>
+              <span className="text-gray-900">{label}</span>
             </label>
           ))}
         </div>
@@ -60,14 +60,13 @@ export function TermsStep({ name, terms, onToggle, onPrev, onNext, canProceed }:
           type="button"
           onClick={onNext}
           disabled={!canProceed}
-          className={`h-12 w-full rounded-input text-[17px] font-semibold text-white transition ${
-            canProceed ? 'bg-primary-mint hover:bg-mint-600' : 'bg-text-300 cursor-not-allowed'
+          className={`h-12 w-full rounded-full text-base font-semibold text-white transition ${
+            canProceed ? 'bg-emerald-500' : 'bg-gray-300'
           }`}
         >
-          {canProceed ? '가입하기' : '필수 약관에 동의해주세요'}
+          {canProceed ? '다음' : '필수 약관에 동의해주세요'}
         </button>
       </div>
     </div>
   );
 }
-

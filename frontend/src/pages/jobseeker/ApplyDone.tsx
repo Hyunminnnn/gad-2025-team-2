@@ -46,11 +46,11 @@ export const ApplyDone = () => {
         {/* Action Buttons */}
         <div className="flex gap-3 w-full max-w-sm">
           <button
-            onClick={() => navigate('/jobseeker/home')}
+            onClick={() => navigate('/my-applications')}
             className="flex-1 h-[52px] bg-mint-600 text-white rounded-[14px] text-[15px] 
                      font-semibold hover:bg-mint-700 transition-colors"
           >
-            지원 현황 확인하기
+            지원 현황 보러가기
           </button>
           <button
             onClick={() => navigate('/jobs')}

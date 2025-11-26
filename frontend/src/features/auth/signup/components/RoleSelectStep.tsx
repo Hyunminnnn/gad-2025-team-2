@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { UserRole } from '../types';
 
 interface RoleSelectStepProps {
@@ -19,6 +20,18 @@ const ROLE_CARDS: Array<{ role: UserRole; title: string; description: string }> 
 ];
 
 export function RoleSelectStep({ selectedRole, onSelect }: RoleSelectStepProps) {
+  const navigate = useNavigate();
+
+  const handleRoleSelect = (role: UserRole) => {
+    if (role === 'employer') {
+      // 고용주 선택 시 별도 라우트로 이동
+      navigate('/signup/employer');
+    } else {
+      // 구직자 선택 시 기존 로직 유지
+      onSelect(role);
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6 py-8">
       <div className="w-full max-w-sm">
@@ -38,7 +51,7 @@ export function RoleSelectStep({ selectedRole, onSelect }: RoleSelectStepProps) 
               <button
                 key={role}
                 type="button"
-                onClick={() => onSelect(role)}
+                onClick={() => handleRoleSelect(role)}
                 className={`w-full rounded-2xl border p-5 text-left transition ${
                   active 
                     ? 'border-primary-mint bg-mint-50 shadow-sm' 

@@ -14,9 +14,9 @@ interface UserInfoStepProps {
   canProceed: boolean;
 }
 
-const LABEL_CLASS = 'text-[15px] font-medium text-text-900';
+const LABEL_CLASS = 'text-sm font-medium text-gray-900';
 const INPUT_CLASS =
-  'mt-2 w-full h-12 rounded-input border border-border px-4 text-[17px] transition focus:outline-none focus:ring-2 focus:ring-primary-mint/20';
+  'mt-2 w-full rounded-2xl border border-gray-200 px-4 py-3 text-base transition focus:border-emerald-500 focus:outline-none';
 
 export function UserInfoStep({
   values,
@@ -37,11 +37,11 @@ export function UserInfoStep({
         <button type="button" onClick={onPrev} className="text-[26px] text-text-600 hover:text-text-900">
           ←
         </button>
-        <span className="flex-1 text-center text-[19px] font-semibold text-text-900">
+        <span className="flex-1 text-center text-base font-semibold text-gray-900">
           구직자 가입
         </span>
       </header>
-      <h1 className="mb-6 text-[26px] font-bold text-text-900">회원정보를 입력해 주세요</h1>
+      <h1 className="mb-6 text-xl font-semibold text-gray-900">회원정보를 입력해 주세요</h1>
 
       <div className="space-y-5">
         <div>
@@ -78,10 +78,10 @@ export function UserInfoStep({
             className={`${INPUT_CLASS} flex items-center justify-between text-left`}
             onClick={onOpenBirthdate}
           >
-            <span className={values.birthdate ? 'text-text-900' : 'text-text-500'}>
+            <span className={values.birthdate ? 'text-gray-900' : 'text-gray-400'}>
               {birthdateLabel}
             </span>
-            <span className="text-text-400">⌄</span>
+            <span className="text-gray-400">⌄</span>
           </button>
         </div>
 
@@ -98,10 +98,10 @@ export function UserInfoStep({
                   key={key}
                   type="button"
                   onClick={() => onGenderSelect(key as 'male' | 'female')}
-                  className={`h-12 rounded-input border px-4 text-[17px] font-medium transition ${
+                  className={`rounded-2xl border px-4 py-3 text-base font-medium transition ${
                     active
-                      ? 'border-primary-mint bg-mint-50 text-primary-mint'
-                      : 'border-border text-text-600 hover:border-primary-mint/30'
+                      ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                      : 'border-gray-200 text-gray-600'
                   }`}
                 >
                   {label}
@@ -120,20 +120,13 @@ export function UserInfoStep({
               onChange={(e) => onNationalitySelect(e.target.value)}
             >
               <option value="">국적을 선택해 주세요</option>
-              {nationalities
-                .sort((a, b) => {
-                  // 한국(KR)을 맨 위에
-                  if (a.code === 'KR') return -1;
-                  if (b.code === 'KR') return 1;
-                  return 0;
-                })
-                .map((option) => (
-                  <option key={option.code} value={option.code}>
-                    ({option.phone_code}) {option.label}
-                  </option>
-                ))}
+              {nationalities.map((option) => (
+                <option key={option.code} value={option.code}>
+                  {option.label}
+                </option>
+              ))}
             </select>
-            <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-text-400">
+            <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-gray-400">
               ⌄
             </span>
           </div>
@@ -148,8 +141,8 @@ export function UserInfoStep({
             onNext();
           }}
           disabled={!canProceed}
-          className={`h-12 w-full rounded-input text-[17px] font-semibold text-white transition ${
-            canProceed ? 'bg-primary-mint hover:bg-mint-600' : 'bg-text-300 cursor-not-allowed'
+          className={`h-12 w-full rounded-full text-base font-semibold text-white transition ${
+            canProceed ? 'bg-emerald-500' : 'bg-gray-300'
           }`}
         >
           {canProceed ? '다음' : '모든 항목을 입력해주세요'}
@@ -158,4 +151,3 @@ export function UserInfoStep({
     </div>
   );
 }
-

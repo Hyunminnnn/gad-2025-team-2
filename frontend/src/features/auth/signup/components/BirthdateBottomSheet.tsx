@@ -31,10 +31,10 @@ export function BirthdateBottomSheet({
   return (
     <>
       <div className="fixed inset-0 z-40 bg-black/40" onClick={onClose} />
-      <div className="fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-white px-6 pb-8 pt-6 shadow-xl max-w-sm mx-auto">
+      <div className="fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-white px-6 pb-8 pt-6 shadow-xl">
         <div className="mb-4 flex items-center justify-between">
-          <p className="text-[19px] font-semibold text-text-900">생년월일을 선택해 주세요</p>
-          <button type="button" onClick={onClose} className="text-[31px] text-text-400 hover:text-text-600">
+          <p className="text-base font-semibold text-gray-900">생년월일을 선택해 주세요</p>
+          <button type="button" onClick={onClose} className="text-lg text-gray-400">
             ×
           </button>
         </div>
@@ -60,7 +60,7 @@ export function BirthdateBottomSheet({
         </div>
         <button
           type="button"
-          className="mt-6 h-12 w-full rounded-input bg-primary-mint hover:bg-mint-600 text-[17px] font-semibold text-white transition"
+          className="mt-6 h-12 w-full rounded-full bg-emerald-500 text-base font-semibold text-white"
           onClick={onConfirm}
         >
           선택하기
@@ -99,11 +99,8 @@ function Picker({ label, options, value, onChange }: PickerProps) {
 
   return (
     <div className="flex-1 text-center">
-      <p className="mb-2 text-[15px] text-text-600">{label}</p>
-      <div 
-        ref={containerRef}
-        className="max-h-48 overflow-y-auto rounded-2xl border border-border bg-background"
-      >
+      <p className="mb-2 text-sm text-gray-500">{label}</p>
+      <div ref={containerRef} className="max-h-48 overflow-y-auto rounded-2xl border border-gray-100 bg-gray-50">
         {options.map((option) => {
           const active = option === value;
           return (
@@ -127,4 +124,3 @@ function Picker({ label, options, value, onChange }: PickerProps) {
     </div>
   );
 }
-

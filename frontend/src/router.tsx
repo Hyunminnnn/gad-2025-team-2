@@ -20,6 +20,7 @@ import { Chat } from './pages/messages/Chat';
 import { SignIn } from './pages/auth/SignIn';
 import { SignUp } from './pages/auth/SignUp';
 import Onboarding from './pages/auth/Onboarding';
+import EmployerSignupWizard from './features/auth/employerSignup/EmployerSignupWizard';
 import { MyPage } from './pages/mypage/MyPage';
 import { LearningHome } from './pages/learning/LearningHome';
 import { LevelTest } from './pages/learning/LevelTest';
@@ -29,6 +30,7 @@ import { ProfileEdit } from './pages/profile/ProfileEdit';
 import { EmployeeScheduleList } from './pages/employer/EmployeeScheduleList';
 import { SharedSchedule } from './pages/employer/SharedSchedule';
 import { MySchedule } from './pages/jobseeker/MySchedule';
+import { NotFound } from './pages/NotFound';
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +40,10 @@ export const router = createBrowserRouter([
   {
     path: '/signup',
     element: <SignUp />,
+  },
+  {
+    path: '/signup/employer',
+    element: <EmployerSignupWizard />,
   },
   {
     path: '/onboarding',
@@ -164,6 +170,10 @@ export const router = createBrowserRouter([
         element: <MyPage />,
       },
     ],
+  },
+  {
+    path: '*',
+    element: <NotFound />,
   },
 ]);
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { SearchBar } from '@/components/SearchBar';
 import { FilterChips } from '@/components/FilterChips';
@@ -9,15 +9,18 @@ import { ProgressCard } from '@/components/ProgressCard';
 import { QuickMenuGrid } from '@/components/QuickMenuGrid';
 import { GuideCard } from '@/components/GuideCard';
 import { JobCardSkeleton } from '@/components/Skeleton';
+import { SafetyNoticeModal } from '@/components/SafetyNoticeModal';
 import { jobsAPI, learningAPI } from '@/api/endpoints';
 import type { Job, LearningProgress } from '@/types';
 
 export const JobSeekerHome = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [learningProgress, setLearningProgress] = useState<LearningProgress | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [showSafetyNotice, setShowSafetyNotice] = useState(false);
   // 기본 필터 설정 - 사용자의 실제 언어 레벨만 설정
   const [appliedFilters, setAppliedFilters] = useState<FilterState>({
     languageLevel: ['Lv.3 중급'], // 수정님의 실제 언어 레벨
@@ -65,6 +68,16 @@ export const JobSeekerHome = () => {
 
     fetchData();
   }, []);
+
+  // Safety Notice Modal 표시 여부 확인
+  useEffect(() => {
+    const fromOnboarding = searchParams.get('from') === 'onboarding';
+    const hideFlag = typeof window !== 'undefined' && localStorage.getItem('hideSafetyNotice') === 'true';
+    
+    if (fromOnboarding && !hideFlag) {
+      setShowSafetyNotice(true);
+    }
+  }, [searchParams]);
 
   const handleFilterApply = (filters: FilterState) => {
     setAppliedFilters(filters);
@@ -194,6 +207,14 @@ export const JobSeekerHome = () => {
           />
         </div>
       </div>
+
+      {/* Safety Notice Modal */}
+      {showSafetyNotice && (
+        <SafetyNoticeModal
+          onClose={() => setShowSafetyNotice(false)}
+          onNeverShowAgain={() => setShowSafetyNotice(false)}
+        />
+      )}
     </div>
   );
 };

@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Header } from '@/components/Header';
+import { ApplyModal } from '@/components/ApplyModal';
 import { jobsAPI, applicationsAPI } from '@/api/endpoints';
 import { formatCurrency, getDaysUntil, formatDate } from '@/utils/date';
 import type { Job } from '@/types';
@@ -12,6 +13,8 @@ export const JobDetail = () => {
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -20,7 +23,6 @@ export const JobDetail = () => {
         const res = await jobsAPI.get(id);
         setJob(res.data);
       } catch (error) {
-        // API 실패시 Mock 데이터 사용
         console.log('API 연결 실패, Mock 데이터 사용');
         try {
           const { getJobById } = await import('@/data/mockJobs');
@@ -43,9 +45,19 @@ export const JobDetail = () => {
     fetchJob();
   }, [id, navigate]);
 
-  const handleApply = async () => {
+  const handleSave = () => {
+    setIsSaved(!isSaved);
+    toast.success(isSaved ? '저장이 해제되었습니다' : '공고가 저장되었습니다');
+  };
+
+  const handleApplyClick = () => {
+    setIsApplyModalOpen(true);
+  };
+
+  const handleApplyWithBasicResume = async () => {
     if (!id) return;
     
+    setIsApplyModalOpen(false);
     try {
       setApplying(true);
       await applicationsAPI.create('seeker-1', id);
@@ -62,6 +74,12 @@ export const JobDetail = () => {
     }
   };
 
+  const handleEditResumeAndApply = () => {
+    if (!id) return;
+    setIsApplyModalOpen(false);
+    navigate('/resume/edit', { state: { jobId: id } });
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
@@ -76,11 +94,10 @@ export const JobDetail = () => {
   const daysLeft = getDaysUntil(job.deadline);
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-[84px]">
       <Header showBack title="공고 상세 정보" />
 
       <div className="p-4">
-        {/* Company header */}
         <div className="mb-5">
           <div className="flex items-center gap-2 mb-2">
             <h1 className="text-[22px] font-bold text-text-900">{job.title}</h1>
@@ -101,7 +118,6 @@ export const JobDetail = () => {
           </div>
         </div>
 
-        {/* Employer message */}
         {job.employerMessage && (
           <div className="bg-mint-100 rounded-[16px] p-4 mb-5">
             <div className="flex items-start gap-2">
@@ -116,7 +132,6 @@ export const JobDetail = () => {
           </div>
         )}
 
-        {/* Work conditions */}
         <div className="mb-6">
           <h2 className="text-[18px] font-bold text-text-900 mb-4">근무 조건</h2>
           <div className="space-y-0 bg-white rounded-[16px] p-4 shadow-card">
@@ -137,7 +152,6 @@ export const JobDetail = () => {
           </div>
         </div>
 
-        {/* Recruitment conditions */}
         <div className="mb-6">
           <h2 className="text-[18px] font-bold text-text-900 mb-4">모집 조건</h2>
           <div className="space-y-0 bg-white rounded-[16px] p-4 shadow-card">
@@ -155,34 +169,31 @@ export const JobDetail = () => {
         </div>
       </div>
 
-      {/* Bottom CTA */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-line-200 p-4 safe-area-bottom">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-line-200 p-4 safe-area-bottom z-50">
         <div className="flex gap-2 max-w-[500px] mx-auto">
           <button
-            onClick={() => {
-              // 고용주와의 채팅 시작
-              navigate(`/messages/${job.employer.id}`);
-            }}
-            className="w-[110px] h-[52px] border-2 border-mint-600 bg-white text-mint-600 
-                     rounded-[12px] text-[15px] font-semibold hover:bg-mint-50 
-                     transition-colors flex items-center justify-center gap-2"
+            onClick={handleSave}
+            className={`w-[52px] h-[52px] rounded-[12px] flex items-center justify-center transition-colors ${
+              isSaved
+                ? 'bg-mint-600 text-white'
+                : 'bg-transparent text-gray-600 hover:bg-gray-50'
+            }`}
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            <svg className="w-6 h-6" fill={isSaved ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isSaved ? 0 : 2}>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
             </svg>
-            채팅
           </button>
+          
           <button
             onClick={() => {
-              // 전화 걸기
               if (job.employer.phone) {
                 window.location.href = `tel:${job.employer.phone}`;
               } else {
                 toast.info('전화번호 정보가 없습니다');
               }
             }}
-            className="w-[110px] h-[52px] border-2 border-mint-600 bg-white text-mint-600 
-                     rounded-[12px] text-[15px] font-semibold hover:bg-mint-50 
+            className="flex-1 h-[52px] bg-mint-100 text-mint-600 
+                     rounded-[12px] text-[15px] font-semibold hover:bg-mint-200 
                      transition-colors flex items-center justify-center gap-2"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -190,16 +201,24 @@ export const JobDetail = () => {
             </svg>
             전화
           </button>
+          
           <button
-            onClick={handleApply}
+            onClick={handleApplyClick}
             disabled={applying}
             className="flex-1 h-[52px] bg-mint-600 text-white rounded-[12px] text-[16px] 
                      font-semibold hover:bg-mint-700 transition-colors disabled:opacity-50"
           >
-            {applying ? '지원 중...' : '지원하기'}
+            지원하기
           </button>
         </div>
       </div>
+
+      <ApplyModal
+        isOpen={isApplyModalOpen}
+        onClose={() => setIsApplyModalOpen(false)}
+        onApplyWithBasicResume={handleApplyWithBasicResume}
+        onEditResumeAndApply={handleEditResumeAndApply}
+      />
     </div>
   );
 };
@@ -221,4 +240,3 @@ const InfoRow = ({ label, value, children, highlight = false }: InfoRowProps) =>
     </div>
   );
 };
-
