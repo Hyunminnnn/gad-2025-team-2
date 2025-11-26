@@ -73,7 +73,7 @@ export const MyPage = () => {
   };
 
   const resume: Resume = {
-    birthYear: signupUserData ? new Date(signupUserData.birthdate).getFullYear() : new Date().getFullYear(),
+    birthYear: signupUserData?.birthdate ? new Date(signupUserData.birthdate).getFullYear() : undefined,
     country: "대한민국",
     city: profileData?.preferred_regions[0] || "미설정",
     nationality: signupUserData?.nationality_name || "미설정",
