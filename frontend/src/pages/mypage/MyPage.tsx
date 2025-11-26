@@ -31,13 +31,16 @@ export const MyPage = () => {
         const userData = await getSignupUser(userId);
         setSignupUserData(userData);
 
-        // Fetch job seeker profile if exists
-        try {
-          const profile = await getJobSeekerProfile(userId);
-          setProfileData(profile);
-        } catch (error) {
-          console.log('Profile not found yet (user might not have completed onboarding)');
+        // 구직자인 경우에만 job seeker profile 가져오기
+        if (userData.role === 'job_seeker') {
+          try {
+            const profile = await getJobSeekerProfile(userId);
+            setProfileData(profile);
+          } catch (error) {
+            console.log('Profile not found yet (user might not have completed onboarding)');
+          }
         }
+        // 고용주인 경우는 employer profile은 필요 없음 (기본 정보만 사용)
       } catch (error) {
         console.error('Failed to load user data:', error);
       } finally {
@@ -52,7 +55,7 @@ export const MyPage = () => {
 
   const profile: Profile = {
     name: signupUserData?.name || "사용자",
-    role: userMode as "jobseeker" | "employer",
+    role: (signupUserData?.role === 'employer' ? 'employer' : 'jobseeker') as "jobseeker" | "employer",
     avatarUrl: profilePhoto,
     joinedAtISO: signupUserData?.created_at || new Date().toISOString(),
     metrics: {

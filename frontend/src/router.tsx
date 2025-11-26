@@ -19,6 +19,7 @@ import { MessageList } from './pages/messages/List';
 import { Chat } from './pages/messages/Chat';
 import { SignIn } from './pages/auth/SignIn';
 import { SignUp } from './pages/auth/SignUp';
+import { AutoRedirect } from './pages/auth/AutoRedirect';
 import Onboarding from './pages/auth/Onboarding';
 import { MyPage } from './pages/mypage/MyPage';
 import { LearningHome } from './pages/learning/LearningHome';
@@ -33,7 +34,7 @@ import { MySchedule } from './pages/jobseeker/MySchedule';
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Navigate to="/signup" replace />,
+    element: <AutoRedirect />,
   },
   {
     path: '/signup',
