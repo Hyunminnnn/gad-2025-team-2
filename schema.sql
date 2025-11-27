@@ -1,6 +1,6 @@
 -- WorkFair MySQL Database Schema
 -- 생성일: 2024
--- 버전: 1.0
+-- 버전: 1.1 (Cleaned up by Gemini)
 
 -- 데이터베이스 생성
 CREATE DATABASE IF NOT EXISTS workfair CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -277,4 +277,3 @@ ON DUPLICATE KEY UPDATE name=VALUES(name), phone_code=VALUES(phone_code);
 --    - employers 테이블에 고용주 정보 자동 생성
 --    - jobs 테이블에 공고 정보 저장
 -- =============================================
-
