@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 export interface EmployerSignupData {
   name: string;
   email: string;
+  password: string;
   businessType: 'business' | 'individual' | '';
   companyName: string;
   address: string;
@@ -21,6 +22,7 @@ export function useEmployerSignupWizard() {
   const [formData, setFormData] = useState<EmployerSignupData>({
     name: '',
     email: '',
+    password: '',
     businessType: '',
     companyName: '',
     address: '',
@@ -114,6 +116,7 @@ export function useEmployerSignupWizard() {
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
+          password: formData.password,
           business_type: formData.businessType,
           company_name: formData.companyName,
           address: formData.address,
@@ -142,7 +145,7 @@ export function useEmployerSignupWizard() {
   const canProceed = () => {
     switch (step) {
       case 1:
-        return formData.name.length >= 2 && formData.email.includes('@');
+        return formData.name.length >= 2 && formData.email.includes('@') && formData.password.length >= 6;
       case 2:
         return formData.businessType !== '';
       case 3:

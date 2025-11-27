@@ -13,8 +13,10 @@ import { EmployerHome } from './pages/employer/EmployerHome';
 import { ApplicantDetail } from './pages/employer/ApplicantDetail';
 import { HireDone } from './pages/employer/HireDone';
 import { JobCreate } from './pages/employer/JobCreate';
+import { JobEdit } from './pages/employer/JobEdit';
 import { Recruitment } from './pages/employer/Recruitment';
 import { JobManagement } from './pages/employer/JobManagement';
+import { JobDetailForEmployer } from './pages/employer/JobDetailForEmployer';
 import { MessageList } from './pages/messages/List';
 import { Chat } from './pages/messages/Chat';
 import { SignIn } from './pages/auth/SignIn';
@@ -137,6 +139,14 @@ export const router = createBrowserRouter([
       {
         path: 'employer/job-create',
         element: <JobCreate />,
+      },
+      {
+        path: 'employer/job/:id',
+        element: <JobDetailForEmployer />,
+      },
+      {
+        path: 'employer/job-edit/:id',
+        element: <JobEdit />,
       },
       {
         path: 'recruitment',

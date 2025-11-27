@@ -12,22 +12,33 @@ export const ApplicantDetail = () => {
   const navigate = useNavigate();
   const [applicant, setApplicant] = useState<JobSeeker | null>(null);
   const [hiring, setHiring] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Mock data
-    const mockApplicant: JobSeeker = {
-      id: id || 'seeker-1',
-      name: '소피아',
-      nationality: '우즈베키스탄',
-      phone: '010-1234-5678',
-      languageLevel: 'L1-2',
-      visaType: 'C - 4',
-      availability: '주말',
-      experience: JSON.stringify([{ role: '레스토랑', years: 2, tags: [] }]),
-      preferences: JSON.stringify({}),
+    const fetchApplicant = async () => {
+      if (!id) return;
+      
+      try {
+        setLoading(true);
+        const response = await fetch(`http://localhost:8000/jobseekers/${id}`);
+        
+        if (!response.ok) {
+          throw new Error('지원자 정보를 불러올 수 없습니다');
+        }
+        
+        const data = await response.json();
+        setApplicant(data);
+      } catch (error) {
+        console.error('지원자 정보 로딩 실패:', error);
+        toast.error('지원자 정보를 불러오는데 실패했습니다');
+        navigate('/employer/home');
+      } finally {
+        setLoading(false);
+      }
     };
-    setApplicant(mockApplicant);
-  }, [id]);
+
+    fetchApplicant();
+  }, [id, navigate]);
 
   const handleHire = async () => {
     if (!id) return;
@@ -52,7 +63,39 @@ export const ApplicantDetail = () => {
     navigate(`/messages/${conversationId}`);
   };
 
+  const handleCall = () => {
+    if (!applicant?.phone) {
+      toast.error('전화번호 정보가 없습니다');
+      return;
+    }
+    // 전화 걸기
+    window.location.href = `tel:${applicant.phone}`;
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-mint-600 border-t-transparent mx-auto"></div>
+          <p className="mt-4 text-gray-600">로딩 중...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!applicant) return null;
+
+  // Parse experience and preferences
+  const experience = typeof applicant.experience === 'string' 
+    ? JSON.parse(applicant.experience) 
+    : applicant.experience || [];
+  
+  const preferences = typeof applicant.preferences === 'string'
+    ? JSON.parse(applicant.preferences)
+    : applicant.preferences || {};
+
+  const skills = preferences.skills || [];
+  const introduction = preferences.introduction || '자기소개가 없습니다.';
 
   return (
     <div className="min-h-screen bg-white pb-24">
@@ -81,16 +124,19 @@ export const ApplicantDetail = () => {
             <p className="text-[14px] text-text-primary">
               비자: {applicant.visaType}
             </p>
-            <p className="text-[14px] text-primary-mint font-medium">
-              경력: 레스토랑 2년 근무
-            </p>
+            {experience.length > 0 && (
+              <p className="text-[14px] text-primary-mint font-medium">
+                경력: {experience[0].role} {experience[0].years}년 근무
+              </p>
+            )}
           </div>
 
           <div className="flex gap-2 flex-wrap">
-            <Tag variant="mint" size="sm">영어 가능</Tag>
-            <Tag variant="outline-mint" size="sm">스페인어 가능</Tag>
-            <Tag variant="outline-mint" size="sm">용산구 거주</Tag>
-            <Tag variant="outline-mint" size="sm">주말 근무 가능</Tag>
+            {skills.map((skill: string, index: number) => (
+              <Tag key={index} variant={index === 0 ? "mint" : "outline-mint"} size="sm">
+                {skill}
+              </Tag>
+            ))}
           </div>
 
           <button className="absolute top-4 right-4 w-10 h-10 bg-primary-mint rounded-full flex items-center justify-center text-white">
@@ -102,19 +148,8 @@ export const ApplicantDetail = () => {
         <div className="mb-5">
           <h2 className="text-[17px] font-bold text-text-primary mb-3">자기소개</h2>
           <div className="bg-mint-50 rounded-xl p-4">
-            <p className="text-[14px] text-text-primary leading-relaxed mb-3">
-              안녕하세요, 저는 소피아입니다. 한국 문화와 K-pop을 좋아해서 우즈베키스탄에서 
-              부터 한국어를 열심히 공부했습니다.
-            </p>
-            <p className="text-[14px] text-text-primary leading-relaxed mb-3">
-              이전 레스토랑에서 서빙 아르바이트를 하며 손님들을 응대했고 주문을 받는 경험을 쌓았습니다.
-            </p>
-            <p className="text-[14px] text-text-primary leading-relaxed mb-3">
-              밝고 긍정적인 성격이라 처음 보는 사람들과도 잘 어울리고 말문 열은 적극감을 갖고 
-              꾸준하게 지키려는 편입니다.
-            </p>
-            <p className="text-[14px] text-text-primary leading-relaxed">
-              빨리 일을 배워서 매장에 도움이 되는 성실한 직원이 되겠습니다. 잘 부탁드립니다!
+            <p className="text-[14px] text-text-primary leading-relaxed whitespace-pre-wrap">
+              {introduction}
             </p>
           </div>
         </div>
@@ -145,9 +180,9 @@ export const ApplicantDetail = () => {
             <span className="text-xl">💬</span>
             채팅
           </CTAButton>
-          <CTAButton variant="outline" onClick={() => {}}>
+          <CTAButton variant="outline" onClick={handleCall}>
             <span className="text-xl">📞</span>
-            전화
+            연락하기
           </CTAButton>
           <CTAButton
             variant="primary"

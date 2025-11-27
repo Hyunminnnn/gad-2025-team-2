@@ -5,10 +5,12 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000
 export interface SignupPayload {
   role: string;
   name: string;
-  phone: string;
-  birthdate: string;
-  gender: string;
-  nationality_code: string;
+  phone?: string;
+  email?: string;
+  password: string;
+  birthdate?: string;
+  gender?: string;
+  nationality_code?: string;
   terms: {
     tos_required: boolean;
     privacy_required: boolean;
@@ -54,10 +56,12 @@ export async function signup(payload: SignupFormValues): Promise<SignupResponse>
   const signupPayload: SignupPayload = {
     role: payload.role!,
     name: payload.name,
-    phone: payload.phone,
-    birthdate: payload.birthdate,
-    gender: payload.gender!,
-    nationality_code: payload.nationalityCode!,
+    phone: payload.phone || undefined,
+    email: payload.email || undefined,
+    password: payload.password,
+    birthdate: payload.birthdate || undefined,
+    gender: payload.gender || undefined,
+    nationality_code: payload.nationalityCode || undefined,
     terms: {
       tos_required: payload.terms.tosRequired,
       privacy_required: payload.terms.privacyRequired,

@@ -89,7 +89,7 @@ export const JobDetail = () => {
   const daysLeft = getDaysUntil(job.deadline);
 
   return (
-    <div className="min-h-screen bg-background pb-[84px]">
+    <div className="min-h-screen bg-background pb-40">
       <Header showBack title="공고 상세 정보" />
 
       <div className="p-4">
@@ -164,14 +164,15 @@ export const JobDetail = () => {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-line-200 p-4 safe-area-bottom z-50">
-        <div className="flex gap-2 max-w-[500px] mx-auto">
+      {/* Bottom Action Buttons - 메뉴바 위에 위치 */}
+      <div className="fixed bottom-20 left-0 right-0 bg-white border-t border-line-200 p-4 z-40">
+        <div className="flex gap-2 max-w-[480px] mx-auto">
           <button
             onClick={handleSave}
             className={`w-[52px] h-[52px] rounded-[12px] flex items-center justify-center transition-colors ${
               isSaved
                 ? 'bg-mint-600 text-white'
-                : 'bg-transparent text-gray-600 hover:bg-gray-50'
+                : 'bg-transparent text-gray-600 hover:bg-gray-50 border border-line-200'
             }`}
           >
             <svg className="w-6 h-6" fill={isSaved ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={isSaved ? 0 : 2}>

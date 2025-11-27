@@ -12,6 +12,41 @@ import {
 import { fetchNationalities, signup } from '../api';
 import { useNavigate } from 'react-router-dom';
 
+// Default nationalities list (from schema.sql)
+const getDefaultNationalities = (): NationalityOption[] => [
+  { code: 'KR', label: '대한민국 (South Korea)', phone_code: '+82' },
+  { code: 'US', label: 'United States', phone_code: '+1' },
+  { code: 'CA', label: 'Canada', phone_code: '+1' },
+  { code: 'JP', label: '日本 (Japan)', phone_code: '+81' },
+  { code: 'CN', label: '中国 (China)', phone_code: '+86' },
+  { code: 'VN', label: 'Việt Nam (Vietnam)', phone_code: '+84' },
+  { code: 'TH', label: 'ประเทศไทย (Thailand)', phone_code: '+66' },
+  { code: 'PH', label: 'Philippines', phone_code: '+63' },
+  { code: 'ID', label: 'Indonesia', phone_code: '+62' },
+  { code: 'MY', label: 'Malaysia', phone_code: '+60' },
+  { code: 'SG', label: 'Singapore', phone_code: '+65' },
+  { code: 'TW', label: '台灣 (Taiwan)', phone_code: '+886' },
+  { code: 'HK', label: '香港 (Hong Kong)', phone_code: '+852' },
+  { code: 'MO', label: '澳門 (Macau)', phone_code: '+853' },
+  { code: 'IN', label: 'India', phone_code: '+91' },
+  { code: 'BD', label: 'Bangladesh', phone_code: '+880' },
+  { code: 'PK', label: 'Pakistan', phone_code: '+92' },
+  { code: 'NP', label: 'Nepal', phone_code: '+977' },
+  { code: 'LK', label: 'Sri Lanka', phone_code: '+94' },
+  { code: 'MM', label: 'Myanmar', phone_code: '+95' },
+  { code: 'KH', label: 'Cambodia', phone_code: '+855' },
+  { code: 'LA', label: 'Laos', phone_code: '+856' },
+  { code: 'MN', label: 'Mongolia', phone_code: '+976' },
+  { code: 'KZ', label: 'Kazakhstan', phone_code: '+7' },
+  { code: 'UZ', label: 'Uzbekistan', phone_code: '+998' },
+  { code: 'RU', label: 'Russia', phone_code: '+7' },
+  { code: 'AU', label: 'Australia', phone_code: '+61' },
+  { code: 'NZ', label: 'New Zealand', phone_code: '+64' },
+  { code: 'GB', label: 'United Kingdom', phone_code: '+44' },
+  { code: 'FR', label: 'France', phone_code: '+33' },
+  { code: 'DE', label: 'Germany', phone_code: '+49' },
+];
+
 const INITIAL_TERMS: TermsState = {
   all: false,
   tosRequired: false,
@@ -24,6 +59,7 @@ const INITIAL_VALUES: SignupFormValues = {
   role: null,
   name: '',
   phone: '',
+  password: '',
   birthdate: '',
   gender: null,
   nationalityCode: null,
@@ -66,26 +102,12 @@ export function useSignupWizard() {
         } else {
           // 빈 배열이면 기본값 사용
           console.warn('국적 목록이 비어있습니다. 기본값을 사용합니다.');
-          setNationalities([
-            { code: 'US', label: 'United States', phone_code: '+1' },
-            { code: 'CA', label: 'Canada', phone_code: '+1' },
-            { code: 'KR', label: '대한민국 (South Korea)', phone_code: '+82' },
-            { code: 'JP', label: '日本 (Japan)', phone_code: '+81' },
-            { code: 'CN', label: '中国 (China)', phone_code: '+86' },
-            { code: 'VN', label: 'Việt Nam (Vietnam)', phone_code: '+84' },
-          ]);
+          setNationalities(getDefaultNationalities());
         }
       } catch (error) {
         console.error('Failed to load nationalities:', error);
         // Fallback to default nationalities
-        setNationalities([
-          { code: 'US', label: 'United States', phone_code: '+1' },
-          { code: 'CA', label: 'Canada', phone_code: '+1' },
-          { code: 'KR', label: '대한민국 (South Korea)', phone_code: '+82' },
-          { code: 'JP', label: '日本 (Japan)', phone_code: '+81' },
-          { code: 'CN', label: '中国 (China)', phone_code: '+86' },
-          { code: 'VN', label: 'Việt Nam (Vietnam)', phone_code: '+84' },
-        ]);
+        setNationalities(getDefaultNationalities());
       } finally {
         setLoadingNationalities(false);
       }
@@ -97,6 +119,7 @@ export function useSignupWizard() {
   const isStep2Complete =
     values.name.trim().length > 0 &&
     /^[0-9]{8,}$/.test(values.phone) &&
+    values.password.length >= 6 &&
     Boolean(values.birthdate) &&
     values.gender !== null &&
     Boolean(values.nationalityCode);

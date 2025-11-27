@@ -16,6 +16,8 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000
 export const authAPI = {
   signin: (email: string, password: string) =>
     apiClient.post<{ user: User; token: string }>('/auth/signin', { email, password }),
+  signIn: (data: { identifier: string; password: string; role: string }) =>
+    apiClient.post<{ user_id: string; token: string; profile_photo?: string; role: string; name: string }>('/auth/signin/new', data),
   signup: (email: string, password: string, role: string) =>
     apiClient.post<{ user: User; token: string }>('/auth/signup', { email, password, role }),
 };

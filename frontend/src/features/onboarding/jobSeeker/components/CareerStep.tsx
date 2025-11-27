@@ -26,6 +26,7 @@ export function CareerStep({
 }: CareerStepProps) {
   // Parse career data from string to array (임시로 빈 배열 사용)
   const [careers, setCareers] = useState<Career[]>([]);
+  const [isNewbie, setIsNewbie] = useState(false);
   
   const totalMonths = careers.reduce((sum, career) => sum + career.months, 0);
 
@@ -88,6 +89,27 @@ export function CareerStep({
               <span className="text-[15px] font-medium text-gray-900">근무계약에서 불러오기</span>
             </div>
           </button>
+
+          {/* 경력 없는 신입 체크박스 */}
+          <div 
+            onClick={() => setIsNewbie(!isNewbie)}
+            className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-4 cursor-pointer hover:bg-gray-50 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+                isNewbie 
+                  ? 'border-primary-mint bg-primary-mint' 
+                  : 'border-gray-300'
+              }`}>
+                {isNewbie && (
+                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+              </div>
+              <span className="text-[15px] font-medium text-gray-900">경력 없는 신입이에요!</span>
+            </div>
+          </div>
         </div>
 
         {/* 경력 목록 */}
@@ -145,13 +167,22 @@ export function CareerStep({
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 py-4 max-w-[420px] mx-auto">
-        <button
-          type="button"
-          onClick={onNext}
-          className="w-full rounded-xl bg-primary-mint px-4 py-3.5 text-[17px] font-semibold text-white"
-        >
-          저장하기
-        </button>
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={onSkip}
+            className="flex-1 rounded-xl bg-gray-200 px-4 py-3.5 text-[17px] font-semibold text-gray-700 hover:bg-gray-300 transition-colors"
+          >
+            나중에 추가하기
+          </button>
+          <button
+            type="button"
+            onClick={onNext}
+            className="flex-1 rounded-xl bg-primary-mint px-4 py-3.5 text-[17px] font-semibold text-white hover:bg-primary-mint/90 transition-colors"
+          >
+            저장하기
+          </button>
+        </div>
       </div>
     </div>
   );

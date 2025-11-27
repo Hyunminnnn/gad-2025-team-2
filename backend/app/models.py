@@ -151,6 +151,7 @@ class SignupUser(SQLModel, table=True):
     name: str
     phone: Optional[str] = None  # Optional for employers
     email: Optional[str] = None  # For employers
+    password: Optional[str] = None  # Hashed password
     birthdate: Optional[date] = None  # Optional for employers
     gender: Optional[str] = None  # male, female, optional for employers
     nationality_code: Optional[str] = Field(default=None, foreign_key="nationalities.code")

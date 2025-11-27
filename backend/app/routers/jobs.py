@@ -100,6 +100,52 @@ async def delete_job(job_id: str, session: Session = Depends(get_session)):
     return {"message": "Job deleted successfully"}
 
 
+@router.put("/{job_id}")
+async def update_job(
+    job_id: str,
+    job_data: dict,
+    session: Session = Depends(get_session)
+):
+    """Update a job posting"""
+    statement = select(Job).where(Job.id == job_id)
+    job = session.exec(statement).first()
+    
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    # Update job fields
+    if 'title' in job_data:
+        job.title = job_data['title']
+    if 'description' in job_data:
+        job.description = job_data['description']
+    if 'category' in job_data:
+        job.category = job_data['category']
+    if 'wage' in job_data:
+        job.wage = job_data['wage']
+    if 'work_days' in job_data:
+        job.workDays = job_data['work_days']
+    if 'work_hours' in job_data:
+        job.workHours = job_data['work_hours']
+    if 'deadline' in job_data:
+        job.deadline = job_data['deadline']
+    if 'positions' in job_data:
+        job.positions = job_data['positions']
+    if 'required_language' in job_data:
+        job.requiredLanguage = job_data['required_language']
+    if 'required_visa' in job_data:
+        job.requiredVisa = json.dumps(job_data['required_visa'])
+    if 'benefits' in job_data:
+        job.benefits = job_data['benefits']
+    if 'employer_message' in job_data:
+        job.employerMessage = job_data['employer_message']
+    
+    session.add(job)
+    session.commit()
+    session.refresh(job)
+    
+    return {"message": "Job updated successfully", "job_id": job.id}
+
+
 @router.post("", response_model=JobResponse, status_code=201)
 async def create_job(request: JobCreateRequest, session: Session = Depends(get_session)):
     """Create a new job posting"""
@@ -139,6 +185,17 @@ async def create_job(request: JobCreateRequest, session: Session = Depends(get_s
     from datetime import datetime
     job_id = f"job-{uuid.uuid4().hex[:8]}"
     current_time = datetime.utcnow().isoformat()
+    
+    # Determine status from request or default to 'active'
+    job_status = getattr(request, 'status', 'active') or 'active'
+    
+    # Extract location from address
+    location = None
+    if employer.address:
+        parts = employer.address.split()
+        if len(parts) >= 2:
+            location = f"{parts[0]} {parts[1]}"
+    
     job = Job(
         id=job_id,
         employerId=employer.id,
@@ -156,10 +213,10 @@ async def create_job(request: JobCreateRequest, session: Session = Depends(get_s
         employerMessage=request.employer_message,
         createdAt=current_time,
         postedAt=current_time,
-        status="active",
+        status=job_status,
         views=0,
         applications=0,
-        location=employer.address.split()[:2].__str__() if employer.address else None,
+        location=location,
     )
     
     session.add(job)

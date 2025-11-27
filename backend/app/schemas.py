@@ -8,6 +8,12 @@ class SignInRequest(BaseModel):
     password: str
 
 
+class NewSignInRequest(BaseModel):
+    identifier: str  # 이메일 또는 전화번호
+    password: str
+    role: str  # "job_seeker" | "employer"
+
+
 class SignUpRequest(BaseModel):
     email: str
     password: str
@@ -63,9 +69,11 @@ class TermsPayload(BaseModel):
 class SignupPayload(BaseModel):
     role: str  # "job_seeker" | "employer"
     name: str
-    phone: str
-    birthdate: str  # YYYY-MM-DD
-    gender: str  # "male" | "female"
+    phone: Optional[str] = None  # 고용주는 선택적
+    email: Optional[str] = None  # 고용주 필수, 구직자 선택적
+    password: str  # 비밀번호
+    birthdate: Optional[str] = None  # YYYY-MM-DD, 고용주는 선택적
+    gender: Optional[str] = None  # "male" | "female", 고용주는 선택적
     nationality_code: Optional[str] = None  # 고용주는 선택적
     terms: TermsPayload
 
@@ -138,6 +146,7 @@ class JobSeekerProfileResponse(BaseModel):
 class EmployerSignupPayload(BaseModel):
     name: str
     email: str
+    password: str  # 비밀번호
     business_type: str  # 'business' or 'individual'
     company_name: str
     address: str
@@ -176,6 +185,7 @@ class JobCreateRequest(BaseModel):
     required_visa: List[str] = []
     benefits: Optional[str] = None
     employer_message: Optional[str] = None
+    status: Optional[str] = "active"  # 'active', 'paused', 'closed'
 
 
 class JobResponse(BaseModel):

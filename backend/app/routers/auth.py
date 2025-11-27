@@ -10,7 +10,7 @@ import traceback
 from app.db import get_session
 from app.models import User, JobSeeker, Employer, SignupUser, Nationality, EmployerProfile
 from app.schemas import (
-    SignInRequest, SignUpRequest, AuthResponse, SignupPayload, SignupResponse, 
+    SignInRequest, NewSignInRequest, SignUpRequest, AuthResponse, SignupPayload, SignupResponse, 
     SignupUserResponse, EmployerSignupPayload, EmployerSignupResponse
 )
 
@@ -62,6 +62,51 @@ async def signin(request: SignInRequest, session: Session = Depends(get_session)
         },
         token=token
     )
+
+
+@router.post("/signin/new")
+async def signin_new(request: NewSignInRequest, session: Session = Depends(get_session)):
+    """New signin endpoint for identifier (email or phone) + password + role"""
+    try:
+        # Find user by identifier (email or phone) and role
+        if request.role == "employer":
+            # Employer logs in with email
+            statement = select(SignupUser).where(
+                SignupUser.email == request.identifier,
+                SignupUser.role == "employer"
+            )
+        else:
+            # Job seeker logs in with phone
+            statement = select(SignupUser).where(
+                SignupUser.phone == request.identifier,
+                SignupUser.role == "job_seeker"
+            )
+        
+        user = session.exec(statement).first()
+        
+        if not user:
+            raise HTTPException(status_code=401, detail="계정을 찾을 수 없습니다")
+        
+        # Verify password
+        if not user.password or not verify_password(request.password, user.password):
+            raise HTTPException(status_code=401, detail="비밀번호가 일치하지 않습니다")
+        
+        # Create token
+        token = create_access_token({"sub": user.id, "role": user.role})
+        
+        return {
+            "user_id": user.id,
+            "token": token,
+            "role": user.role,
+            "name": user.name,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        error_detail = f"Signin failed: {str(e)}\n{traceback.format_exc()}"
+        print(error_detail)
+        raise HTTPException(status_code=500, detail=f"로그인 중 오류가 발생했습니다: {str(e)}")
 
 
 @router.post("/signup/legacy", response_model=AuthResponse)
@@ -175,11 +220,16 @@ async def signup_new(request: SignupPayload, session: Session = Depends(get_sess
         gender = request.gender or "male"  # 고용주는 기본값
         nationality_code = request.nationality_code or "KR"  # 고용주는 기본값
         
+        # Hash password
+        hashed_password = hash_password(request.password)
+        
         signup_user = SignupUser(
             id=user_id,
             role=request.role,
             name=request.name,
             phone=request.phone or "",  # 고용주는 전화번호가 없을 수 있음
+            email=request.email,  # 고용주 필수
+            password=hashed_password,  # 해시된 비밀번호 저장
             birthdate=birthdate,
             gender=gender,
             nationality_code=nationality_code,
@@ -241,11 +291,16 @@ async def signup_employer(request: EmployerSignupPayload, session: Session = Dep
     """Employer signup endpoint"""
     # Create SignupUser for employer
     user_id = f"employer-{uuid.uuid4().hex[:8]}"
+    
+    # Hash password
+    hashed_password = hash_password(request.password)
+    
     signup_user = SignupUser(
         id=user_id,
         role="employer",
         name=request.name,
         email=request.email,
+        password=hashed_password,  # 해시된 비밀번호 저장
         terms_tos_required=True,  # Assumed agreed via modal
         terms_privacy_required=True,
     )

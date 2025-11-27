@@ -16,6 +16,7 @@ export interface SignupFormValues {
   role: UserRole | null;
   name: string;
   phone: string;
+  password: string;
   birthdate: string; // YYYY-MM-DD
   gender: Gender | null;
   nationalityCode: string | null;

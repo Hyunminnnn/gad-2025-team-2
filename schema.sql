@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS signup_users (
     name VARCHAR(100) NOT NULL COMMENT '이름',
     phone VARCHAR(20) NULL COMMENT '전화번호 (구직자 필수, 고용주 선택)',
     email VARCHAR(255) NULL COMMENT '이메일 (고용주 필수, 구직자 선택)',
+    password VARCHAR(255) NULL COMMENT '비밀번호 (해시값)',
     birthdate DATE NULL COMMENT '생년월일 (구직자 필수, 고용주 선택)',
     gender VARCHAR(10) NULL COMMENT '성별: male, female (구직자 필수, 고용주 선택)',
     nationality_code VARCHAR(10) NULL COMMENT '국적 코드',

@@ -64,6 +64,19 @@ export function RoleSelectStep({ selectedRole, onSelect }: RoleSelectStepProps) 
             );
           })}
         </div>
+
+        {/* Login Link */}
+        <div className="mt-6 text-center">
+          <p className="text-[15px] text-text-600">
+            이미 계정이 있으신가요?{' '}
+            <button
+              onClick={() => navigate('/auth/signin')}
+              className="text-mint-600 font-semibold hover:text-mint-700 underline"
+            >
+              로그인
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   );

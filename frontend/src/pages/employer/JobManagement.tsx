@@ -215,7 +215,7 @@ export const JobManagement = () => {
             return (
               <div
                 key={job.id}
-                onClick={() => navigate(`/jobs/${job.id}`)}
+                onClick={() => navigate(`/employer/job/${job.id}`)}
                 className="bg-white rounded-[16px] p-4 border border-line-200 
                          hover:border-mint-600/30 hover:shadow-soft transition-all cursor-pointer"
               >
