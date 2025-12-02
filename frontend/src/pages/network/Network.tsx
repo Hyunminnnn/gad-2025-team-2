@@ -170,8 +170,8 @@ export const Network = () => {
       timeAgo: '2시간 전',
       communityName: '알바 정보 공유',
       commentsData: [
-        { id: 'c1-1', author: '김사장', authorNationality: '🇰🇷', content: '저희 가게에서 사람 구하는데, 한번 와보실래요?', timeAgo: '1시간 전' },
-        { id: 'c1-2', author: '이민준', authorNationality: '🇰🇷', content: '강남역 10번 출구 쪽 찾아보세요.', timeAgo: '30분 전' },
+        { id: 'c1-1', author: '김사장', author_nationality: '🇰🇷', content: '저희 가게에서 사람 구하는데, 한번 와보실래요?', timeAgo: '1시간 전' },
+        { id: 'c1-2', author: '이민준', author_nationality: '🇰🇷', content: '강남역 10번 출구 쪽 찾아보세요.', timeAgo: '30분 전' },
       ]
     },
     {
@@ -184,7 +184,7 @@ export const Network = () => {
       timeAgo: '5시간 전',
       communityName: '한국어 학습 커뮤니티',
       commentsData: [
-        { id: 'c2-1', author: '김하나', authorNationality: '🇰🇷', content: '축하해요, 응웬 씨! 정말 대단해요!', timeAgo: '4시간 전' },
+        { id: 'c2-1', author: '김하나', author_nationality: '🇰🇷', content: '축하해요, 응웬 씨! 정말 대단해요!', timeAgo: '4시간 전' },
       ]
     },
     {
@@ -207,7 +207,7 @@ export const Network = () => {
         timeAgo: '1일 전',
         communityName: 'K-POP 팬 모임',
         commentsData: [
-          { id: 'c4-1', author: '크리스', authorNationality: '🇺🇸', content: '저도요! 이번 컨셉 너무 좋아요.', timeAgo: '23시간 전' },
+          { id: 'c4-1', author: '크리스', author_nationality: '🇺🇸', content: '저도요! 이번 컨셉 너무 좋아요.', timeAgo: '23시간 전' },
         ]
     },
     {
@@ -219,6 +219,133 @@ export const Network = () => {
         comments: 0,
         timeAgo: '2일 전',
         communityName: '음식 맛집 추천'
+    },
+    {
+      id: '6',
+      author: '이수진',
+      authorNationality: '🇰🇷',
+      content: 'E-7 비자 준비하시는 분들, 궁금한 점 질문해주세요! 제가 도와드릴게요.',
+      likes: 22,
+      comments: 3,
+      timeAgo: '1일 전',
+      communityName: 'E-7 비자 홀더 모임',
+      commentsData: [
+        { id: 'c6-1', author: '하미드', author_nationality: '🇮🇳', content: '서류 준비가 너무 어려워요 ㅠㅠ', timeAgo: '20시간 전' },
+        { id: 'c6-2', author: '마크', author_nationality: '🇬🇧', content: '번역 공증 꼭 해야 하나요?', timeAgo: '18시간 전' },
+        { id: 'c6-3', author: '이수진', author_nationality: '🇰🇷', content: '네, 원칙적으로 해야 합니다. 대사관에 문의해보세요.', timeAgo: '10시간 전' },
+      ]
+    },
+    {
+      id: '7',
+      author: '민준',
+      authorNationality: '🇰🇷',
+      content: '주말에 북한산 등산 갈 분! 초보자도 환영합니다. 함께 땀 흘려요!',
+      likes: 18,
+      comments: 0,
+      timeAgo: '3일 전',
+      communityName: '주말 등산/캠핑 모임'
+    },
+    {
+      id: '8',
+      author: '소피아',
+      authorNationality: '🇷🇺',
+      content: '불고기 레시피 아시는 분? 쉬운 레시피 부탁드려요!',
+      likes: 56,
+      comments: 2,
+      timeAgo: '4일 전',
+      communityName: '한국 요리 레시피',
+      commentsData: [
+        { id: 'c8-1', author: '김쉐프', author_nationality: '🇰🇷', content: '유튜브에 백종원 불고기 레시피 찾아보세요!', timeAgo: '3일 전' },
+        { id: 'c8-2', author: '타냐', author_nationality: '🇷🇺', content: '저도 그 레시피로 성공했어요!', timeAgo: '2일 전' },
+      ]
+    },
+    {
+      id: '9',
+      author: '리카르도',
+      authorNationality: '🇧🇷',
+      content: '손흥민 선수 골! 역시 월클이네요.',
+      likes: 99,
+      comments: 5,
+      timeAgo: '1주 전',
+      communityName: 'K-POP 팬 모임', // Can be used for sports too
+      commentsData: [
+        { id: 'c9-1', author: '폴', author_nationality: '🇫🇷', content: '미쳤다 진짜 ㅋㅋㅋㅋ', timeAgo: '6일 전' },
+        { id: 'c9-2', author: '한국인1', author_nationality: '🇰🇷', content: '우리흥 폼 미쳤다!', timeAgo: '5일 전' },
+      ]
+    },
+    {
+      id: '10',
+      author: '안나',
+      authorNationality: '🇺🇦',
+      content: '한국어 과외 해주실 분 찾아요! 왕초보입니다 ㅠㅠ',
+      likes: 7,
+      comments: 1,
+      timeAgo: '2일 전',
+      communityName: '한국어 학습 커뮤니티',
+      commentsData: [
+        { id: 'c10-1', author: '강선생', author_nationality: '🇰🇷', content: '쪽지 드렸어요!', timeAgo: '1일 전' },
+      ]
+    },
+    {
+      id: '11',
+      author: '하야토',
+      authorNationality: '🇯🇵',
+      content: '이번 주말 부산 날씨 어떤가요? 여행 가는데 걱정이네요.',
+      likes: 15,
+      comments: 0,
+      timeAgo: '3일 전',
+      communityName: '부산 거주자 모임'
+    },
+    {
+      id: '12',
+      author: '줄리아',
+      authorNationality: '🇮🇹',
+      content: '인천에서 맛집 탐방하실 분? 파스타 말고 다른거요!',
+      likes: 10,
+      comments: 2,
+      timeAgo: '1일 전',
+      communityName: '인천/경기 거주자 모임',
+      commentsData: [
+        { id: 'c12-1', author: '마르코', author_nationality: '🇮🇹', content: '전 파스타 좋아하는데...', timeAgo: '20시간 전' },
+        { id: 'c12-2', author: '김인천', author_nationality: '🇰🇷', content: '신포국제시장에 맛있는 거 많아요!', timeAgo: '18시간 전' },
+      ]
+    },
+    {
+      id: '13',
+      author: '박세영',
+      authorNationality: '🇰🇷',
+      content: '강아지 산책 시킬 때 꼭 필요한 아이템이 있을까요?',
+      likes: 30,
+      comments: 4,
+      timeAgo: '6시간 전',
+      communityName: '반려동물과 함께하기',
+      commentsData: [
+        { id: 'c13-1', author: '강아지맘', author_nationality: '🇰🇷', content: '자동 리드줄 최고!', timeAgo: '5시간 전' },
+        { id: 'c13-2', author: '멍멍이파파', author_nationality: '🇺🇸', content: '배변 봉투는 필수죠!', timeAgo: '4시간 전' },
+      ]
+    },
+    {
+      id: '14',
+      author: '리카',
+      authorNationality: '🇯🇵',
+      content: 'D-4 비자 만료일이 다가오는데, 연장은 어떻게 해야하나요?',
+      likes: 5,
+      comments: 1,
+      timeAgo: '1주 전',
+      communityName: 'D-2/D-4 비자 정보',
+      commentsData: [
+        { id: 'c14-1', author: '비자도우미', author_nationality: '🇰🇷', content: '출입국사무소 예약하고 방문하세요.', timeAgo: '6일 전' },
+      ]
+    },
+    {
+      id: '15',
+      author: '존',
+      authorNationality: '🇨🇦',
+      content: '명동에 혼자 놀기 좋은 곳 추천해주세요! 카페나 서점 좋아요.',
+      likes: 11,
+      comments: 0,
+      timeAgo: '2시간 전',
+      communityName: '서울 외국인 모임'
     }
   ];
 
