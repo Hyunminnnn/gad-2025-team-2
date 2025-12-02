@@ -4,54 +4,49 @@ interface GuideCardProps {
   image?: 'scam' | 'korean' | 'hiring' | 'insurance';
 }
 
-export const GuideCard = ({ title, description, image }: GuideCardProps) => {
+export const GuideCard = ({ title, image }: GuideCardProps) => {
+  const content = {
+    scam: {
+      title: '구직자님!',
+      subtitle: '최근 유행인 사기 수법 알아가세요',
+      bgColor: 'bg-red-100',
+    },
+    korean: {
+      title: '꼭! 알아야 할',
+      subtitle: '오늘의 생활 한국어 표현',
+      bgColor: 'bg-blue-100',
+    },
+    hiring: {
+      title: '채용 프로세스',
+      subtitle: 'A to Z 알아보기',
+      bgColor: 'bg-indigo-100',
+    },
+    insurance: {
+      title: '4대 보험',
+      subtitle: '필수 가입 정보 확인',
+      bgColor: 'bg-green-100',
+    },
+  };
+
+  const cardContent = image ? content[image] : { title, subtitle: '', bgColor: 'bg-gray-100' };
+
   return (
-    <div className="bg-white rounded-card-sm overflow-hidden shadow-card hover:shadow-soft 
-                  transition-all cursor-pointer w-full h-[160px] flex flex-col">
-      {/* Content */}
-      <div className="p-3 flex-1 flex flex-col">
-        {/* Image icon area */}
-        <div className="mb-2">
-          {image === 'scam' && (
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-red-50 to-orange-50 
-                          flex items-center justify-center border border-red-100">
-              <div className="text-center">
-                <span className="text-xl">⚠️</span>
-              </div>
-            </div>
-          )}
-          {image === 'korean' && (
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-50 to-red-50 
-                          flex items-center justify-center border border-blue-100">
-              <div className="text-center">
-                <span className="text-xl">🇰🇷</span>
-              </div>
-            </div>
-          )}
-          {image === 'hiring' && (
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 
-                          flex items-center justify-center border border-blue-100">
-              <div className="text-center">
-                <span className="text-xl">👨‍💼</span>
-              </div>
-            </div>
-          )}
-          {image === 'insurance' && (
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-green-50 to-emerald-50 
-                          flex items-center justify-center border border-green-100">
-              <div className="text-center">
-                <span className="text-xl">📋</span>
-              </div>
-            </div>
-          )}
-        </div>
-        
-        {/* Title */}
-        <h3 className="text-[13px] font-bold text-text-900 leading-snug line-clamp-3">
-          {title}
+    <div className="bg-white rounded-2xl overflow-hidden shadow-md 
+                  transition-all cursor-pointer w-full flex flex-col h-48">
+      {/* Image Area */}
+      <div className={`w-full h-2/3 ${cardContent.bgColor}`}>
+        {/* Placeholder for an actual image */}
+      </div>
+
+      {/* Text Area */}
+      <div className="flex-1 flex flex-col justify-center items-center p-2 text-center">
+        <h3 className="text-sm font-bold text-text-900 leading-tight">
+          {cardContent.title}
         </h3>
+        <p className="text-xs text-text-700 leading-snug">
+          {cardContent.subtitle}
+        </p>
       </div>
     </div>
   );
 };
-
