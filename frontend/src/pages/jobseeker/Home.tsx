@@ -155,7 +155,7 @@ export const JobSeekerHome = () => {
 
       {/* Learning progress */}
       {learningProgress && (
-        <div className="px-8 pb-4">
+        <div className="px-8 pt-2 pb-2">
           <ProgressCard
             title="현재 학습 상태"
             level={learningProgress.currentLevel}
@@ -168,7 +168,7 @@ export const JobSeekerHome = () => {
       )}
 
       {/* Quick menu */}
-      <div className="pb-4">
+      <div className="pt-2 pb-4">
         {/* Section header */}
         <div className="flex items-center gap-2 px-8 mb-3">
           <span className="text-[16px]">🔎</span>
