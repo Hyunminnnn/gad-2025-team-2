@@ -358,6 +358,7 @@ export const CommunityDetail: React.FC = () => {
   const [showJoinModal, setShowJoinModal] = React.useState(false);
   const [isJoined, setIsJoined] = React.useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = React.useState(false);
+  const [newPostContent, setNewPostContent] = React.useState('');
   const [newComments, setNewComments] = React.useState<{ [key: string]: string }>({});
 
   const community = React.useMemo(
@@ -407,6 +408,26 @@ export const CommunityDetail: React.FC = () => {
           : post
       )
     );
+  };
+
+  const handleRegisterPost = () => {
+    if (newPostContent.trim() === '') return;
+
+    const newPost: CommunityPost = {
+      id: String(Date.now()),
+      author: '나 (You)',
+      authorNationality: '🇰🇷',
+      content: newPostContent.trim(),
+      likes: 0,
+      comments: 0,
+      timeAgo: '방금 전',
+      commentsData: [],
+      isLiked: false,
+      showComments: false,
+    };
+
+    setCommunityPosts(prevPosts => [newPost, ...prevPosts]);
+    setNewPostContent('');
   };
 
   const handleAddNewComment = (postId: string) => {
@@ -562,14 +583,20 @@ export const CommunityDetail: React.FC = () => {
 
         {/* Create Post for Community */}
         <div className="bg-white rounded-[16px] p-4 shadow-card border border-line-200">
+          <textarea
+            placeholder="무슨 생각을 하고 계신가요?"
+            className="w-full p-3 bg-background rounded-[12px] text-[14px] text-text-500 
+                       focus:outline-none focus:ring-2 focus:ring-mint-300 resize-none h-24 mb-3"
+            value={newPostContent}
+            onChange={(e) => setNewPostContent(e.target.value)}
+          ></textarea>
           <button
-            onClick={() => {
-              alert('커뮤니티 게시글 작성 페이지 (구현 예정)');
-            }}
-            className="w-full text-left p-3 bg-background rounded-[12px] 
-                         text-[14px] text-text-500 hover:bg-gray-100 transition-colors"
+            onClick={handleRegisterPost}
+            disabled={!newPostContent.trim()}
+            className="w-full h-[48px] bg-mint-600 text-white rounded-[12px] text-[16px] font-semibold 
+                       hover:bg-mint-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
-            무슨 생각을 하고 계신가요?
+            등록
           </button>
         </div>
 
