@@ -35,7 +35,8 @@ interface Post {
 export const Network = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'communities' | 'feed'>('communities');
-  
+  const [newPostContent, setNewPostContent] = useState('');
+
   const communities: Community[] = [
     {
       id: '1',
@@ -373,6 +374,27 @@ export const Network = () => {
     );
   };
 
+  const handleRegisterPost = () => {
+    if (newPostContent.trim() === '') return;
+
+    const newPost: Post = {
+      id: String(feedPosts.length + 1), // Simple unique ID generation
+      author: '나 (You)', // Dummy author for now
+      authorNationality: '🇰🇷', // Dummy nationality
+      content: newPostContent.trim(),
+      likes: 0,
+      comments: 0,
+      timeAgo: '방금 전', // Just now
+      communityName: '피드', // Or a general community name
+      commentsData: [],
+      isLiked: false,
+      showComments: false,
+    };
+
+    setFeedPosts(prevPosts => [newPost, ...prevPosts]);
+    setNewPostContent(''); // Clear the textarea
+  };
+
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
@@ -460,15 +482,20 @@ export const Network = () => {
           <div className="space-y-4">
             {/* Create Post */}
             <div className="bg-white rounded-[16px] p-4 shadow-card border border-line-200">
+              <textarea
+                placeholder="무슨 생각을 하고 계신가요?"
+                className="w-full p-3 bg-background rounded-[12px] text-[14px] text-text-500 
+                           focus:outline-none focus:ring-2 focus:ring-mint-300 resize-none h-24 mb-3"
+                value={newPostContent}
+                onChange={(e) => setNewPostContent(e.target.value)}
+              ></textarea>
               <button
-                onClick={() => {
-                  // Navigate to create post page
-                  alert('게시글 작성 페이지 (구현 예정)');
-                }}
-                className="w-full text-left p-3 bg-background rounded-[12px] 
-                         text-[14px] text-text-500 hover:bg-gray-100 transition-colors"
+                onClick={handleRegisterPost}
+                disabled={!newPostContent.trim()}
+                className="w-full h-[48px] bg-mint-600 text-white rounded-[12px] text-[16px] font-semibold 
+                           hover:bg-mint-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
-                무슨 생각을 하고 계신가요?
+                등록
               </button>
             </div>
 
