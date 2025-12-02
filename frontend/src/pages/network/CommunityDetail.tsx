@@ -358,6 +358,7 @@ export const CommunityDetail: React.FC = () => {
   const [showJoinModal, setShowJoinModal] = React.useState(false);
   const [isJoined, setIsJoined] = React.useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = React.useState(false);
+  const [newComments, setNewComments] = React.useState<{ [key: string]: string }>({});
 
   const community = React.useMemo(
     () => dummyCommunityDetails.find((c) => c.id === id),
@@ -406,6 +407,32 @@ export const CommunityDetail: React.FC = () => {
           : post
       )
     );
+  };
+
+  const handleAddNewComment = (postId: string) => {
+    const newCommentContent = newComments[postId]?.trim();
+    if (!newCommentContent) return;
+
+    const newComment: CommentType = {
+      id: `c${Date.now()}`,
+      author: '나 (You)',
+      authorNationality: '🇰🇷',
+      content: newCommentContent,
+      timeAgo: '방금 전',
+    };
+
+    setCommunityPosts(prevPosts =>
+      prevPosts.map(post =>
+        post.id === postId
+          ? {
+              ...post,
+              commentsData: [...(post.commentsData || []), newComment],
+            }
+          : post
+      )
+    );
+
+    setNewComments(prev => ({ ...prev, [postId]: '' }));
   };
 
   const JoinCommunityModal = () => (
@@ -646,40 +673,46 @@ export const CommunityDetail: React.FC = () => {
                 </button>
               </div>
               {/* Comments Section */}
-              {post.showComments &&
-                post.commentsData &&
-                post.commentsData.length > 0 && (
-                  <div className="mt-4 pt-3 border-t border-line-200">
-                    <h5 className="text-[13px] font-semibold text-text-800 mb-2">
-                      댓글
-                    </h5>
-                    <div className="space-y-3">
-                      {post.commentsData.map((comment) => (
-                        <div key={comment.id} className="flex items-start gap-2">
-                          <div
-                            className="w-8 h-8 bg-gradient-to-br from-gray-100 to-gray-200 
-                                       rounded-full flex items-center justify-center text-[16px] flex-shrink-0"
-                          >
-                            {comment.authorNationality}
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex items-center gap-1">
-                              <span className="text-[13px] font-semibold text-text-900">
-                                {comment.author}
-                              </span>
-                              <span className="text-[11px] text-text-500">
-                                • {comment.timeAgo}
-                              </span>
-                            </div>
-                            <p className="text-[13px] text-text-800 leading-snug">
-                              {comment.content}
-                            </p>
-                          </div>
+              {post.showComments && (
+                <div className="mt-4 pt-3 border-t border-line-200">
+                  <h5 className="text-[13px] font-semibold text-text-800 mb-3">
+                    댓글 ({post.commentsData?.length || 0})
+                  </h5>
+                  <div className="space-y-3">
+                    {post.commentsData && post.commentsData.map((comment) => (
+                      <div key={comment.id} className="flex items-start gap-2">
+                        <div className="w-8 h-8 bg-gradient-to-br from-gray-100 to-gray-200 
+                                       rounded-full flex items-center justify-center text-[16px] flex-shrink-0">
+                          {comment.authorNationality}
                         </div>
-                      ))}
-                    </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-1">
+                            <span className="text-[13px] font-semibold text-text-900">{comment.author}</span>
+                            <span className="text-[11px] text-text-500">• {comment.timeAgo}</span>
+                          </div>
+                          <p className="text-[13px] text-text-800 leading-snug">{comment.content}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                )}
+                  <div className="mt-4 flex items-center gap-2">
+                    <textarea
+                      placeholder="댓글을 입력하세요..."
+                      value={newComments[post.id] || ''}
+                      onChange={(e) => setNewComments({...newComments, [post.id]: e.target.value})}
+                      className="flex-1 p-2 bg-gray-100 rounded-[10px] text-[13px] focus:outline-none focus:ring-1 focus:ring-mint-400 resize-none"
+                      rows={1}
+                    />
+                    <button
+                      onClick={() => handleAddNewComment(post.id)}
+                      disabled={!newComments[post.id]?.trim()}
+                      className="px-4 h-[38px] bg-mint-600 text-white rounded-[10px] text-[13px] font-semibold hover:bg-mint-700 transition-colors disabled:bg-gray-300"
+                    >
+                      작성
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>

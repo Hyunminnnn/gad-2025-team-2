@@ -36,6 +36,7 @@ export const Network = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'communities' | 'feed'>('communities');
   const [newPostContent, setNewPostContent] = useState('');
+  const [newComments, setNewComments] = useState<{ [key: string]: string }>({});
 
   const communities: Community[] = [
     {
@@ -395,6 +396,32 @@ export const Network = () => {
     setNewPostContent(''); // Clear the textarea
   };
 
+  const handleAddNewComment = (postId: string) => {
+    const newCommentContent = newComments[postId]?.trim();
+    if (!newCommentContent) return;
+
+    const newComment: CommentType = {
+      id: `c${Date.now()}`,
+      author: '나 (You)',
+      authorNationality: '🇰🇷',
+      content: newCommentContent,
+      timeAgo: '방금 전',
+    };
+
+    setFeedPosts(prevPosts =>
+      prevPosts.map(post =>
+        post.id === postId
+          ? {
+              ...post,
+              commentsData: [...(post.commentsData || []), newComment],
+            }
+          : post
+      )
+    );
+
+    setNewComments(prev => ({ ...prev, [postId]: '' }));
+  };
+
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
@@ -564,11 +591,13 @@ export const Network = () => {
                   </button>
                 </div>
                 {/* Comments Section */}
-                {post.showComments && post.commentsData && post.commentsData.length > 0 && (
+                {post.showComments && (
                   <div className="mt-4 pt-3 border-t border-line-200">
-                    <h5 className="text-[13px] font-semibold text-text-800 mb-2">댓글</h5>
+                    <h5 className="text-[13px] font-semibold text-text-800 mb-3">
+                      댓글 ({post.commentsData?.length || 0})
+                    </h5>
                     <div className="space-y-3">
-                      {post.commentsData.map((comment) => (
+                      {post.commentsData && post.commentsData.map((comment) => (
                         <div key={comment.id} className="flex items-start gap-2">
                           <div className="w-8 h-8 bg-gradient-to-br from-gray-100 to-gray-200 
                                          rounded-full flex items-center justify-center text-[16px] flex-shrink-0">
@@ -583,6 +612,22 @@ export const Network = () => {
                           </div>
                         </div>
                       ))}
+                    </div>
+                    <div className="mt-4 flex items-center gap-2">
+                      <textarea
+                        placeholder="댓글을 입력하세요..."
+                        value={newComments[post.id] || ''}
+                        onChange={(e) => setNewComments({...newComments, [post.id]: e.target.value})}
+                        className="flex-1 p-2 bg-gray-100 rounded-[10px] text-[13px] focus:outline-none focus:ring-1 focus:ring-mint-400 resize-none"
+                        rows={1}
+                      />
+                      <button
+                        onClick={() => handleAddNewComment(post.id)}
+                        disabled={!newComments[post.id]?.trim()}
+                        className="px-4 h-[38px] bg-mint-600 text-white rounded-[10px] text-[13px] font-semibold hover:bg-mint-700 transition-colors disabled:bg-gray-300"
+                      >
+                        작성
+                      </button>
                     </div>
                   </div>
                 )}
