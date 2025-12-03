@@ -27,6 +27,7 @@ import EmployerSignupWizard from './features/auth/signup/EmployerSignupWizard';
 import { MyPage } from './pages/mypage/MyPage';
 import { LearningHome } from './pages/learning/LearningHome';
 import { LevelTest } from './pages/learning/LevelTest';
+import { LessonQuiz } from './pages/learning/LessonQuiz';
 import { LessonDetail } from './pages/learning/LessonDetail';
 import { Network } from './pages/network/Network';
 import { ProfileEdit } from './pages/profile/ProfileEdit';
@@ -128,6 +129,10 @@ export const router = createBrowserRouter([
       {
         path: 'learning/lesson/:id',
         element: <LessonDetail />,
+      },
+      {
+        path: 'learning/lesson/:id/quiz',
+        element: <LessonQuiz />,
       },
       {
         path: 'network',

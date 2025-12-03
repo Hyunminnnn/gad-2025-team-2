@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Header } from '@/components/Header';
-import { LevelTestIntro } from './LevelTestIntro';
 
 interface Question {
   id: number;
@@ -11,6 +10,7 @@ interface Question {
   explanation: string;
 }
 
+// Placeholder questions - ideally, these would be fetched based on the lesson ID
 const questionsData: Question[] = [
   {
     id: 1,
@@ -56,6 +56,7 @@ const AnswerFeedback: React.FC<{
   onNext: () => void;
   isLastQuestion: boolean;
 }> = ({ isCorrect, question, onNext, isLastQuestion }) => {
+  // Feedback UI remains the same as LevelTest
   const CorrectIcon = () => (
     <svg className="w-16 h-16 text-mint-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -97,9 +98,10 @@ const AnswerFeedback: React.FC<{
   );
 };
 
-export const LevelTest = () => {
+export const LessonQuiz = () => {
   const navigate = useNavigate();
-  const [testStarted, setTestStarted] = useState(false);
+  const { id: lessonId } = useParams<{ id: string }>();
+
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
   const [userAnswers, setUserAnswers] = useState<(number | null)[]>([]);
@@ -107,10 +109,6 @@ export const LevelTest = () => {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [showResult, setShowResult] = useState(false);
 
-  const handleStartTest = () => {
-    setTestStarted(true);
-  };
-  
   const handleSelectAndSubmit = (index: number) => {
     if (isAnswered) return;
 
@@ -137,37 +135,70 @@ export const LevelTest = () => {
     }
   };
 
-  if (!testStarted) {
-    return <LevelTestIntro onStartTest={handleStartTest} />;
-  }
-
   if (showResult) {
-    const score = Math.round(
-      (userAnswers.filter((answer, index) => answer === questionsData[index].correctIndex).length / questionsData.length) * 100
-    );
-    const level = score >= 90 ? 'Lv.4 상급' : score >= 70 ? 'Lv.3 중급' : score >= 50 ? 'Lv.2 초급' : 'Lv.1 기초';
+    const correctAnswers = userAnswers.filter((answer, index) => answer === questionsData[index].correctIndex).length;
+    const totalQuestions = questionsData.length;
 
-    // Save the result to localStorage
-    localStorage.setItem('userLevel', level);
+    // Increment progress by 5% instead of overwriting with score
+    if (lessonId) {
+      const currentProgress = parseInt(localStorage.getItem(`lesson-progress-${lessonId}`) || '0', 10);
+      const newProgress = Math.min(currentProgress + 5, 100); // Cap at 100
+      localStorage.setItem(`lesson-progress-${lessonId}`, newProgress.toString());
+    }
+
+    const incorrectQuestions = questionsData.filter((question, index) => {
+      const userAnswer = userAnswers[index];
+      return userAnswer !== null && userAnswer !== question.correctIndex;
+    });
 
     return (
       <div className="min-h-screen bg-background flex flex-col">
-        <Header title="레벨 테스트" />
-        <div className="flex flex-col items-center justify-center flex-grow px-6 transform -translate-y-8">
-          <div className="w-32 h-32 mb-8 flex items-center justify-center">
-            <svg className="w-full h-full text-mint-600" viewBox="0 0 120 120" fill="none">
-              <circle cx="60" cy="60" r="54" stroke="currentColor" strokeWidth="4" fill="none" />
-              <path d="M35 60 L52 77 L85 44" stroke="currentColor" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-            </svg>
+        <Header title="퀴즈 결과" />
+        <div className="flex flex-col items-center flex-grow p-6">
+          <div className="w-full max-w-sm text-center">
+            <div className="w-24 h-24 mx-auto mb-6 flex items-center justify-center">
+              <svg className="w-full h-full text-mint-600" viewBox="0 0 120 120" fill="none">
+                <circle cx="60" cy="60" r="54" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path d="M35 60 L52 77 L85 44" stroke="currentColor" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              </svg>
+            </div>
+            <h2 className="text-[24px] font-bold text-text-900 mb-2">퀴즈 완료!</h2>
+            <p className="text-[16px] text-text-700 mb-8">
+              총 {totalQuestions}문제 중 {correctAnswers}문제를 맞혔어요.
+            </p>
+
+            {incorrectQuestions.length > 0 && (
+              <div className="w-full text-left mb-8">
+                <h3 className="text-[18px] font-bold text-text-800 mb-4">틀린 문제 다시 보기</h3>
+                <div className="space-y-4">
+                  {incorrectQuestions.map((question) => {
+                    const questionIndex = questionsData.findIndex(q => q.id === question.id);
+                    const userAnswerIndex = userAnswers[questionIndex];
+                    const userAnswerText = userAnswerIndex !== null ? question.options[userAnswerIndex] : '답변 안 함';
+                    const correctAnswerText = question.options[question.correctIndex];
+
+                    return (
+                      <div key={question.id} className="bg-white rounded-[16px] p-4 border border-line-200 shadow-card">
+                        <p className="text-[15px] font-semibold text-text-900 mb-3">{question.text}</p>
+                        <div className="text-[14px] space-y-2 bg-gray-50 p-3 rounded-lg">
+                          <p className="text-red-600">
+                            <span className="font-bold">나의 답:</span> {userAnswerText}
+                          </p>
+                          <p className="text-mint-700">
+                            <span className="font-bold">정답:</span> {correctAnswerText}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            <button onClick={() => navigate('/learning')} className="w-full h-[52px] bg-mint-600 text-white rounded-[14px] text-[15px] font-semibold hover:bg-mint-700">
+              학습 홈으로 돌아가기
+            </button>
           </div>
-          <h2 className="text-[24px] font-bold text-text-900 mb-4">테스트 완료!</h2>
-          <p className="text-[16px] text-text-700 text-center mb-3">당신의 한국어 레벨은</p>
-          <div className="px-6 py-3 bg-mint-100 rounded-[12px] mb-8">
-            <p className="text-[28px] font-bold text-mint-600">{level}</p>
-          </div>
-          <button onClick={() => navigate('/learning')} className="w-full max-w-sm h-[52px] bg-mint-600 text-white rounded-[14px] text-[15px] font-semibold hover:bg-mint-700">
-            학습 시작하기
-          </button>
         </div>
       </div>
     );
@@ -178,7 +209,7 @@ export const LevelTest = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <Header title="레벨 테스트" showBack />
+      <Header title="강의 퀴즈" showBack />
       
       {isAnswered && isCorrect !== null && (
         <AnswerFeedback
